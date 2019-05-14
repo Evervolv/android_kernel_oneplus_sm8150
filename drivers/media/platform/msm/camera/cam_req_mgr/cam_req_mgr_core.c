@@ -47,7 +47,10 @@ void cam_req_mgr_core_link_reset(struct cam_req_mgr_core_link *link)
 	link->open_req_cnt = 0;
 	link->last_flush_id = 0;
 	link->initial_sync_req = -1;
+<<<<<<< HEAD
 	link->in_msync_mode = false;
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 }
 
 void cam_req_mgr_handle_core_shutdown(void)
@@ -694,9 +697,14 @@ static int __cam_req_mgr_check_sync_for_mslave(
 
 	CAM_DBG(CAM_CRM,
 		"link_hdl %x req %lld frame_skip_flag %d open_req_cnt:%d initial_sync_req [%lld,%lld] is_master:%d",
+<<<<<<< HEAD
 		link->link_hdl, req_id, link->sync_link_sof_skip,
 		link->open_req_cnt, link->initial_sync_req,
 		sync_link->initial_sync_req, link->is_master);
+=======
+		link->link_hdl, req_id, link->sync_link_sof_skip, link->open_req_cnt,
+		link->initial_sync_req, sync_link->initial_sync_req, link->is_master);
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 
 	if (sync_link->sync_link_sof_skip) {
 		CAM_DBG(CAM_CRM,
@@ -823,19 +831,30 @@ static int __cam_req_mgr_check_sync_for_mslave(
 		if ((sync_link->initial_sync_req != -1) &&
 			(sync_link->initial_sync_req <= sync_req_id)) {
 			sync_slot_idx = __cam_req_mgr_find_slot_for_req(
+<<<<<<< HEAD
 				sync_link->req.in_q, sync_req_id);
+=======
+						sync_link->req.in_q, sync_req_id);
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 			if (sync_slot_idx == -1) {
 				CAM_DBG(CAM_CRM,
 					"Next Req: %lld [slave] not found on link: %x [master]",
 					sync_req_id, sync_link->link_hdl);
+<<<<<<< HEAD
 				link->sync_link_sof_skip = true;
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 				return -EINVAL;
 			}
 
 			if ((sync_link->req.in_q->slot[sync_slot_idx].status !=
 				CRM_SLOT_STATUS_REQ_APPLIED) &&
+<<<<<<< HEAD
 				(((sync_slot_idx - rd_idx + sync_num_slots) %
 				sync_num_slots) >= 1) &&
+=======
+				((sync_slot_idx - rd_idx) >= 1) &&
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 				(sync_link->req.in_q->slot[rd_idx].status !=
 				CRM_SLOT_STATUS_REQ_APPLIED)) {
 				CAM_DBG(CAM_CRM,
@@ -844,15 +863,24 @@ static int __cam_req_mgr_check_sync_for_mslave(
 				return -EINVAL;
 			}
 
+<<<<<<< HEAD
 			sync_slot = &sync_link->req.in_q->slot[sync_slot_idx];
 			rc = __cam_req_mgr_check_link_is_ready(sync_link,
 				sync_slot_idx, true);
 			if (rc && (sync_slot->status !=
+=======
+			rc = __cam_req_mgr_check_link_is_ready(sync_link,
+				sync_slot_idx, true);
+			if (rc && (sync_link->req.in_q->slot[sync_slot_idx].status !=
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 				CRM_SLOT_STATUS_REQ_APPLIED)) {
 				CAM_DBG(CAM_CRM,
 					"Next Req: %lld [slave] not ready on [master] link: %x, rc=%d",
 					sync_req_id, sync_link->link_hdl, rc);
+<<<<<<< HEAD
 				link->sync_link_sof_skip = true;
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 				return rc;
 			}
 		}
@@ -1044,6 +1072,7 @@ static int __cam_req_mgr_process_req(struct cam_req_mgr_core_link *link,
 		if ((slot->sync_mode == CAM_REQ_MGR_SYNC_MODE_SYNC) &&
 			(link->sync_link)) {
 			if (link->is_master || link->sync_link->is_master) {
+<<<<<<< HEAD
 				if (!link->in_msync_mode) {
 					CAM_DBG(CAM_CRM,
 						"Settings master-slave sync mode for link 0x%x",
@@ -1051,11 +1080,17 @@ static int __cam_req_mgr_process_req(struct cam_req_mgr_core_link *link,
 					link->in_msync_mode = true;
 				}
 
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 				rc =  __cam_req_mgr_check_sync_for_mslave(
 					link, slot);
 			} else {
 				rc = __cam_req_mgr_check_sync_req_is_ready(
 					link, slot);
+<<<<<<< HEAD
+=======
+				link->initial_sync_req = -1;
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 			}
 		} else {
 			if (link->in_msync_mode) {
@@ -1075,6 +1110,7 @@ static int __cam_req_mgr_process_req(struct cam_req_mgr_core_link *link,
 			if (!rc)
 				rc = __cam_req_mgr_check_link_is_ready(link,
 					slot->idx, false);
+			link->initial_sync_req = -1;
 		}
 
 		if (rc < 0) {
@@ -1801,8 +1837,12 @@ int cam_req_mgr_process_sched_req(void *priv, void *data)
 	sched_req  = (struct cam_req_mgr_sched_request *)&task_data->u;
 	in_q = link->req.in_q;
 
+<<<<<<< HEAD
 	CAM_DBG(CAM_CRM,
 		"link_hdl %x req_id %lld at slot %d sync_mode %d is_master:%d",
+=======
+	CAM_DBG(CAM_CRM, "link_hdl %x req_id %lld at slot %d sync_mode %d is_master:%d",
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 		sched_req->link_hdl, sched_req->req_id,
 		in_q->wr_idx, sched_req->sync_mode,
 		link->is_master);
@@ -1821,6 +1861,7 @@ int cam_req_mgr_process_sched_req(void *priv, void *data)
 	slot->recover = sched_req->bubble_enable;
 	link->open_req_cnt++;
 	__cam_req_mgr_inc_idx(&in_q->wr_idx, 1, in_q->num_slots);
+<<<<<<< HEAD
 
 	if (slot->sync_mode == CAM_REQ_MGR_SYNC_MODE_SYNC) {
 		if (link->initial_sync_req == -1)
@@ -1831,6 +1872,13 @@ int cam_req_mgr_process_sched_req(void *priv, void *data)
 			link->sync_link->initial_sync_req = -1;
 	}
 
+=======
+	if (slot->sync_mode == CAM_REQ_MGR_SYNC_MODE_SYNC) {
+		if (link->initial_sync_req == -1)
+			link->initial_sync_req = slot->req_id;
+	} else
+		link->initial_sync_req = -1;
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 	mutex_unlock(&link->req.lock);
 
 end:
@@ -1936,6 +1984,7 @@ int cam_req_mgr_process_add_req(void *priv, void *data)
 			link->link_hdl, idx, add_req->req_id, tbl->pd);
 		slot->state = CRM_REQ_STATE_READY;
 	}
+
 	mutex_unlock(&link->req.lock);
 
 end:

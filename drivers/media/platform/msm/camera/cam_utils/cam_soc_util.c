@@ -577,7 +577,7 @@ int cam_soc_util_clk_disable(struct clk *clk, const char *clk_name)
 	if (!clk || !clk_name)
 		return -EINVAL;
 
-	CAM_DBG(CAM_UTIL, "disable %s", clk_name);
+	CAM_INFO(CAM_UTIL, "disable %s", clk_name);
 	clk_disable_unprepare(clk);
 
 	return 0;
@@ -1733,7 +1733,11 @@ uint32_t cam_soc_util_get_vote_level(struct cam_hw_soc_info *soc_info,
 		if (soc_info->clk_level_valid[i] &&
 			soc_info->clk_rate[i][soc_info->src_clk_idx] >=
 			clock_rate) {
+<<<<<<< HEAD
 			CAM_DBG(CAM_UTIL,
+=======
+			CAM_INFO(CAM_UTIL,
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 				"Clock rate %lld, selected clock level %d",
 				clock_rate, i);
 			return i;

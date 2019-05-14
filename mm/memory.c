@@ -1130,6 +1130,10 @@ again:
 	/*
 	 * Prevent the page fault handler to copy the page while stale tlb entry
 	 * are still not flushed.
+<<<<<<< HEAD
+=======
+	 * ethan.peng 2019/1/22 CR2366100.
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 	 */
 	if (IS_ENABLED(CONFIG_SPECULATIVE_PAGE_FAULT) &&
 	    is_cow_mapping(vma->vm_flags))
@@ -3200,7 +3204,10 @@ int do_swap_page(struct vm_fault *vmf)
 	 * before page_add_anon_rmap() and swap_free(); try_to_free_swap()
 	 * must be called after the swap_free(), or it will never succeed.
 	 */
-
+#ifdef CONFIG_MEMPLUS
+	if (current_is_swapind())
+		SetPageWillneed(page);
+#endif
 	inc_mm_counter_fast(vma->vm_mm, MM_ANONPAGES);
 	dec_mm_counter_fast(vma->vm_mm, MM_SWAPENTS);
 	pte = mk_pte(page, vmf->vma_page_prot);

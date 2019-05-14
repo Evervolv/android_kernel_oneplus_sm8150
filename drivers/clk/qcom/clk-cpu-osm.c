@@ -561,6 +561,10 @@ static struct clk_osm *osm_configure_policy(struct cpufreq_policy *policy)
 		if (parent != c_parent)
 			continue;
 
+<<<<<<< HEAD
+=======
+		/* cpumask_set_cpu(cpu, policy->cpus); */
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 		cpumask_set_cpu(cpu, &c->related_cpus);
 		if (n->core_num == 0)
 			first = n;

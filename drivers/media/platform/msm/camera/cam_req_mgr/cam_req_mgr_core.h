@@ -314,9 +314,15 @@ struct cam_req_mgr_connected_device {
  *                         is assigned as master
  * @initial_skip         : Flag to determine if slave has started streaming in
  *                         master-slave sync
+<<<<<<< HEAD
  * @in_msync_mode        : Flag to determine if a link is in master-slave mode
  * @initial_sync_req     : The initial req which is required to sync with the
  *                         other link
+=======
+ * @initial_sync_req     : The initial req which is required to sync
+							with the other link
+ *
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
  */
 struct cam_req_mgr_core_link {
 	int32_t                              link_hdl;
@@ -341,7 +347,10 @@ struct cam_req_mgr_core_link {
 	atomic_t                             is_used;
 	bool                                 is_master;
 	bool                                 initial_skip;
+<<<<<<< HEAD
 	bool                                 in_msync_mode;
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 	int64_t                              initial_sync_req;
 };
 

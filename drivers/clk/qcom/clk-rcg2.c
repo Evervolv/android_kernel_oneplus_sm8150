@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2016-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2013, 2016-2018, The Linux Foundation. All rights reserved.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -392,13 +392,18 @@ static int clk_rcg2_determine_floor_rate(struct clk_hw *hw,
 }
 
 static bool clk_rcg2_current_config(struct clk_rcg2 *rcg,
+<<<<<<< HEAD
 				    const struct freq_tbl *f)
+=======
+		const struct freq_tbl *f)
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 {
 	struct clk_hw *hw = &rcg->clkr.hw;
 	u32 cfg, mask, new_cfg;
 	int index;
 
 	if (rcg->mnd_width) {
+<<<<<<< HEAD
 		mask = BIT(rcg->mnd_width) - 1;
 		regmap_read(rcg->clkr.regmap, rcg->cmd_rcgr + M_REG, &cfg);
 		if ((cfg & mask) != (f->m & mask))
@@ -407,6 +412,16 @@ static bool clk_rcg2_current_config(struct clk_rcg2 *rcg,
 		regmap_read(rcg->clkr.regmap, rcg->cmd_rcgr + N_REG, &cfg);
 		if ((cfg & mask) != (~(f->n - f->m) & mask))
 			return false;
+=======
+	mask = BIT(rcg->mnd_width) - 1;
+	regmap_read(rcg->clkr.regmap, rcg->cmd_rcgr + M_REG, &cfg);
+	if ((cfg & mask) != (f->m & mask))
+		return false;
+
+	regmap_read(rcg->clkr.regmap, rcg->cmd_rcgr + N_REG, &cfg);
+	if ((cfg & mask) != (~(f->n - f->m) & mask))
+	return false;
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 	}
 
 	mask = (BIT(rcg->hid_width) - 1) | CFG_SRC_SEL_MASK;
@@ -414,12 +429,20 @@ static bool clk_rcg2_current_config(struct clk_rcg2 *rcg,
 	index = qcom_find_src_index(hw, rcg->parent_map, f->src);
 
 	new_cfg = ((f->pre_div << CFG_SRC_DIV_SHIFT) |
+<<<<<<< HEAD
 		(rcg->parent_map[index].cfg << CFG_SRC_SEL_SHIFT)) & mask;
+=======
+	(rcg->parent_map[index].cfg << CFG_SRC_SEL_SHIFT)) & mask;
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 
 	regmap_read(rcg->clkr.regmap, rcg->cmd_rcgr + CFG_REG, &cfg);
 
 	if (new_cfg != (cfg & mask))
+<<<<<<< HEAD
 		return false;
+=======
+		 return false;
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 
 	return true;
 }
@@ -1166,7 +1189,12 @@ static int clk_pixel_set_rate(struct clk_hw *hw, unsigned long rate,
 		f.n = frac->den;
 
 		if (clk_rcg2_current_config(rcg, &f))
+<<<<<<< HEAD
 			return 0;
+=======
+		return 0;
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 		return clk_rcg2_configure(rcg, &f);
 	}
 	return -EINVAL;

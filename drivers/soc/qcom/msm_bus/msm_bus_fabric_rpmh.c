@@ -752,7 +752,11 @@ void msm_bus_commit_single(struct device *dev)
 		return;
 
 	bcm_commit_single_req(bcm_dev, bcm_dev->node_vec[DUAL_CTX].vec_a,
+<<<<<<< HEAD
 				bcm_dev->node_vec[DUAL_CTX].vec_b);
+=======
+	bcm_dev->node_vec[DUAL_CTX].vec_b);
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 }
 
 void *msm_bus_realloc_devmem(struct device *dev, void *p, size_t old_size,

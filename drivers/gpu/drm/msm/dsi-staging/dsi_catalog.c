@@ -73,7 +73,10 @@ static void dsi_catalog_cmn_init(struct dsi_ctrl_hw *ctrl,
 	ctrl->ops.set_continuous_clk = dsi_ctrl_hw_cmn_set_continuous_clk;
 	ctrl->ops.wait4dynamic_refresh_done =
 		dsi_ctrl_hw_cmn_wait4dynamic_refresh_done;
+<<<<<<< HEAD
 	ctrl->ops.hs_req_sel = dsi_ctrl_hw_cmn_hs_req_sel;
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 
 	switch (version) {
 	case DSI_CTRL_VERSION_1_4:

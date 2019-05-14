@@ -26,7 +26,7 @@ static struct i2c_settings_list*
 		uint32_t size)
 {
 	struct i2c_settings_list *tmp;
-
+	int  retry_time = 3;
 	tmp = (struct i2c_settings_list *)
 		kzalloc(sizeof(struct i2c_settings_list), GFP_KERNEL);
 
@@ -37,7 +37,22 @@ static struct i2c_settings_list*
 		return NULL;
 
 	tmp->i2c_settings.reg_setting = (struct cam_sensor_i2c_reg_array *)
+<<<<<<< HEAD
 		vzalloc(size * sizeof(struct cam_sensor_i2c_reg_array));
+=======
+		kcalloc(size, sizeof(struct cam_sensor_i2c_reg_array),
+			GFP_KERNEL);
+
+	while (tmp->i2c_settings.reg_setting == NULL && retry_time > 0) {
+		msleep(5);
+		tmp->i2c_settings.reg_setting = (struct cam_sensor_i2c_reg_array *)
+			kcalloc(size, sizeof(struct cam_sensor_i2c_reg_array),
+				GFP_KERNEL);
+		retry_time--;
+		CAM_ERR(CAM_SENSOR, "fail to alloc memory, retry = %d", retry_time);
+	}
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 	if (tmp->i2c_settings.reg_setting == NULL) {
 		list_del(&(tmp->list));
 		kfree(tmp);

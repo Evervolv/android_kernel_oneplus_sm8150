@@ -28,7 +28,13 @@ struct qmi_rmnet_ps_ind {
 void qmi_rmnet_qmi_exit(void *qmi_pt, void *port);
 void qmi_rmnet_change_link(struct net_device *dev, void *port, void *tcm_pt);
 void qmi_rmnet_enable_all_flows(struct net_device *dev);
+<<<<<<< HEAD
 bool qmi_rmnet_all_flows_enabled(struct net_device *dev);
+=======
+
+bool qmi_rmnet_all_flows_enabled(struct net_device *dev);
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 #else
 static inline void qmi_rmnet_qmi_exit(void *qmi_pt, void *port)
 {
@@ -49,6 +55,11 @@ qmi_rmnet_all_flows_enabled(struct net_device *dev)
 {
 	return true;
 }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 #endif
 
 #ifdef CONFIG_QCOM_QMI_DFC
@@ -86,8 +97,14 @@ int qmi_rmnet_set_powersave_mode(void *port, uint8_t enable);
 void qmi_rmnet_work_init(void *port);
 void qmi_rmnet_work_exit(void *port);
 void qmi_rmnet_work_maybe_restart(void *port);
+<<<<<<< HEAD
 void qmi_rmnet_set_dl_msg_active(void *port);
 bool qmi_rmnet_ignore_grant(void *port);
+=======
+//void qmi_rmnet_work_restart(void *port);
+
+void qmi_rmnet_set_dl_msg_active(void *port);
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 
 int qmi_rmnet_ps_ind_register(void *port,
 			      struct qmi_rmnet_ps_ind *ps_ind);
@@ -104,6 +121,14 @@ static inline int qmi_rmnet_set_powersave_mode(void *port, uint8_t enable)
 static inline void qmi_rmnet_work_init(void *port)
 {
 }
+<<<<<<< HEAD
+=======
+
+//static inline void qmi_rmnet_work_restart(void *port)
+//{
+//
+//}
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 static inline void qmi_rmnet_work_exit(void *port)
 {
 }
@@ -114,10 +139,13 @@ static inline void qmi_rmnet_work_maybe_restart(void *port)
 static inline void qmi_rmnet_set_dl_msg_active(void *port)
 {
 }
+<<<<<<< HEAD
 static inline bool qmi_rmnet_ignore_grant(void *port)
 {
 	return false;
 }
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 
 static inline int qmi_rmnet_ps_ind_register(struct rmnet_port *port,
 				     struct qmi_rmnet_ps_ind *ps_ind)

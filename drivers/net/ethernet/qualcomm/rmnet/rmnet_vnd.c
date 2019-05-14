@@ -76,7 +76,13 @@ static netdev_tx_t rmnet_vnd_start_xmit(struct sk_buff *skb,
 		trace_rmnet_xmit_skb(skb);
 		rmnet_egress_handler(skb);
 		qmi_rmnet_burst_fc_check(dev, ip_type, mark, len);
+<<<<<<< HEAD
 		qmi_rmnet_work_maybe_restart(rmnet_get_rmnet_port(dev));
+=======
+
+		qmi_rmnet_work_maybe_restart(rmnet_get_rmnet_port(dev));
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 	} else {
 		this_cpu_inc(priv->pcpu_stats->stats.tx_drops);
 		kfree_skb(skb);

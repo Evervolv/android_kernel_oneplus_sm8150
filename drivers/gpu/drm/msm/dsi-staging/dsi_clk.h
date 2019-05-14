@@ -318,8 +318,18 @@ int dsi_clk_set_byte_clk_rate(void *client, u64 byte_clk, u32 index);
  */
 int dsi_clk_update_parent(struct dsi_clk_link_set *parent,
 			  struct dsi_clk_link_set *child);
+<<<<<<< HEAD
 
 /**
+=======
+/**
+ * dsi_clk_req_state() - request to change dsi clock state
+ * @client:       DSI clocl client pointer.
+ * @clk:          DSI clock list.
+ * @state:        Requested state of the clock.
+ */
+ /**
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
  * dsi_clk_prepare_enable() - prepare and enable dsi src clocks
  * @clk:       list of src clocks.
  *
@@ -333,6 +343,7 @@ int dsi_clk_prepare_enable(struct dsi_clk_link_set *clk);
  */
 void dsi_clk_disable_unprepare(struct dsi_clk_link_set *clk);
 
+<<<<<<< HEAD
 /**
  * dsi_clk_req_state() - request to change dsi clock state
  * @client:       DSI clocl client pointer.
@@ -342,4 +353,10 @@ void dsi_clk_disable_unprepare(struct dsi_clk_link_set *clk);
 int dsi_clk_req_state(void *client, enum dsi_clk_type clk,
 	enum dsi_clk_state state);
 
+=======
+int dsi_clk_req_state(void *client, enum dsi_clk_type clk,
+	enum dsi_clk_state state);
+
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 #endif /* _DSI_CLK_H_ */

@@ -312,6 +312,12 @@ static int rmnet_map_egress_handler(struct sk_buff *skb,
 			return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+=======
+//	if (port->data_format & RMNET_INGRESS_FORMAT_PS)
+//		qmi_rmnet_work_maybe_restart(port);
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4)
 		rmnet_map_checksum_uplink_packet(skb, orig_dev);
 

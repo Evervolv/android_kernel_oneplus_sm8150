@@ -857,7 +857,12 @@ struct dwc3_scratchpad_array {
 #define DWC3_GSI_EVT_BUF_CLEANUP		12
 #define DWC3_GSI_EVT_BUF_CLEAR			13
 #define DWC3_GSI_EVT_BUF_FREE			14
+<<<<<<< HEAD
 #define DWC3_CONTROLLER_NOTIFY_CLEAR_DB		15
+=======
+#define DWC3_CONTROLLER_NOTIFY_CLEAR_DB	15
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 
 #define MAX_INTR_STATS				10
 

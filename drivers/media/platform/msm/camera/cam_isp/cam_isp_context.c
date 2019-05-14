@@ -826,8 +826,13 @@ static int __cam_isp_ctx_epoch_in_applied(struct cam_isp_context *ctx_isp,
 		notify.error = CRM_KMD_ERR_BUBBLE;
 		ctx->ctx_crm_intf->notify_err(&notify);
 		atomic_set(&ctx_isp->process_bubble, 1);
+<<<<<<< HEAD
 		CAM_DBG(CAM_ISP, "Notify CRM about Bubble frame %lld, ctx %u",
 			ctx_isp->frame_id, ctx->ctx_id);
+=======
+		CAM_INFO(CAM_ISP, "Notify CRM about Bubble frame %lld",
+			ctx_isp->frame_id);
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 	} else {
 		req_isp->bubble_report = 0;
 	}
@@ -2144,7 +2149,7 @@ static int __cam_isp_ctx_rdi_only_sof_in_bubble_applied(
 		notify.req_id = req->request_id;
 		notify.error = CRM_KMD_ERR_BUBBLE;
 		ctx->ctx_crm_intf->notify_err(&notify);
-		CAM_DBG(CAM_ISP, "Notify CRM about Bubble frame %lld",
+		CAM_INFO(CAM_ISP, "Notify CRM about Bubble frame %lld",
 			ctx_isp->frame_id);
 	} else {
 		req_isp->bubble_report = 0;

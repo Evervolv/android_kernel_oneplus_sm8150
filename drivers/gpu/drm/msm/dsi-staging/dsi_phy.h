@@ -339,6 +339,7 @@ void dsi_phy_dynamic_refresh_clear(struct msm_dsi_phy *phy);
  */
 int dsi_phy_dyn_refresh_cache_phy_timings(struct msm_dsi_phy *phy,
 					  u32 *dst, u32 size);
+<<<<<<< HEAD
 /**
  * dsi_phy_set_continuous_clk() - API to set/unset force clock lane HS request.
  * @phy:	DSI PHY Handle.
@@ -346,4 +347,6 @@ int dsi_phy_dyn_refresh_cache_phy_timings(struct msm_dsi_phy *phy,
  */
 void dsi_phy_set_continuous_clk(struct msm_dsi_phy *phy, bool enable);
 
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 #endif /* _DSI_PHY_H_ */

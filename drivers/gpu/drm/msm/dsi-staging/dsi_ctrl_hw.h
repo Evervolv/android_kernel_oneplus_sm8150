@@ -835,6 +835,7 @@ struct dsi_ctrl_hw_ops {
 	 * @ctrl:         Pointer to the controller host hardware.
 	 */
 	int (*wait4dynamic_refresh_done)(struct dsi_ctrl_hw *ctrl);
+<<<<<<< HEAD
 
 	/**
 	 * hw.ops.hs_req_sel() - enable continuous clk support through phy
@@ -842,6 +843,8 @@ struct dsi_ctrl_hw_ops {
 	 * @sel_phy:	Bool to control whether to select phy or controller
 	 */
 	void (*hs_req_sel)(struct dsi_ctrl_hw *ctrl, bool sel_phy);
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 };
 
 /*

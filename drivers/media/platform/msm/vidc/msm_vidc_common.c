@@ -6361,11 +6361,15 @@ int msm_comm_qbuf_cache_operations(struct msm_vidc_inst *inst,
 					u32 size_u32;
 					skip = false;
 					offset = 0;
+<<<<<<< HEAD
 					size_u32 = vb->planes[i].length;
 					msm_comm_fetch_filled_length(
 						&inst->fbd_data, vb->index,
 						&size_u32);
 					size = size_u32;
+=======
+					size = vb->planes[i].length;
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 					cache_op = SMEM_CACHE_INVALIDATE;
 				}
 			}

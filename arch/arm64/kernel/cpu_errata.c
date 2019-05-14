@@ -526,6 +526,7 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 			   MIDR_CPU_VAR_REV(0, 0),
 			   MIDR_CPU_VAR_REV(3, 0)),
 	},
+<<<<<<< HEAD
 	{
 		.capability = ARM64_WORKAROUND_REPEAT_TLBI,
 		MIDR_RANGE(MIDR_KRYO4G,
@@ -540,6 +541,8 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
 			   MIDR_CPU_VAR_REV(0, 0),
 			   MIDR_CPU_VAR_REV(3, 0)),
 	},
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 #endif
 #ifdef CONFIG_ARM64_ERRATUM_858921
 	{

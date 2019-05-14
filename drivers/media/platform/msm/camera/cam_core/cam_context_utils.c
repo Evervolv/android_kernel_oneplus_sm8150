@@ -492,9 +492,17 @@ int32_t cam_context_prepare_dev_to_hw(struct cam_context *ctx,
 			ctx->dev_name, ctx->ctx_id);
 
 	return rc;
+<<<<<<< HEAD
 put_ctx_ref:
 	for (j; j >= 0; j--)
 		cam_context_putref(ctx);
+=======
+
+put_ctx_ref:
+	for (--j; j >= 0; j--)
+		cam_context_putref(ctx);
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 put_ref:
 	for (--i; i >= 0; i--) {
 		if (cam_sync_put_obj_ref(req->out_map_entries[i].sync_id))

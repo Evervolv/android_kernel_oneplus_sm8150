@@ -1237,6 +1237,7 @@ void dsi_phy_dynamic_refresh_clear(struct msm_dsi_phy *phy)
 	mutex_unlock(&phy->phy_lock);
 }
 
+<<<<<<< HEAD
 /**
  * dsi_phy_set_continuous_clk() - set/unset force clock lane HS request
  * @phy:	DSI PHY handle
@@ -1257,6 +1258,8 @@ void dsi_phy_set_continuous_clk(struct msm_dsi_phy *phy, bool enable)
 	mutex_unlock(&phy->phy_lock);
 }
 
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 void dsi_phy_drv_register(void)
 {
 	platform_driver_register(&dsi_phy_platform_driver);

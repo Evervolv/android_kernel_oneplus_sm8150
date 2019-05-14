@@ -577,7 +577,13 @@ void qmi_rmnet_enable_all_flows(struct net_device *dev)
 {
 	struct qos_info *qos;
 	struct rmnet_bearer_map *bearer;
+<<<<<<< HEAD
 	bool do_wake;
+=======
+
+//	int do_wake = 0;
+	bool do_wake = false;
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 
 	qos = (struct qos_info *)rmnet_get_qos_pt(dev);
 	if (!qos)
@@ -586,15 +592,32 @@ void qmi_rmnet_enable_all_flows(struct net_device *dev)
 	spin_lock_bh(&qos->qos_lock);
 
 	list_for_each_entry(bearer, &qos->bearer_head, list) {
+<<<<<<< HEAD
 		if (bearer->tx_off)
 			continue;
 		do_wake = !bearer->grant_size;
+=======
+
+//		bearer->grant_before_ps = bearer->grant_size;
+//		bearer->seq_before_ps = bearer->seq;
+		if (!bearer->grant_size)
+			do_wake = true;
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 		bearer->grant_size = DEFAULT_GRANT;
 		bearer->grant_thresh = DEFAULT_GRANT;
 		bearer->seq = 0;
 		bearer->ack_req = 0;
+<<<<<<< HEAD
 		bearer->tcp_bidir = false;
 		bearer->rat_switch = false;
+=======
+		bearer->ancillary = 0;
+
+//		do_wake = 1;
+
+	}
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 
 		if (do_wake)
 			dfc_bearer_flow_ctl(dev, bearer, qos);
@@ -604,6 +627,10 @@ void qmi_rmnet_enable_all_flows(struct net_device *dev)
 }
 EXPORT_SYMBOL(qmi_rmnet_enable_all_flows);
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 bool qmi_rmnet_all_flows_enabled(struct net_device *dev)
 {
 	struct qos_info *qos;
@@ -629,6 +656,11 @@ bool qmi_rmnet_all_flows_enabled(struct net_device *dev)
 }
 EXPORT_SYMBOL(qmi_rmnet_all_flows_enabled);
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 #ifdef CONFIG_QCOM_QMI_DFC
 void qmi_rmnet_burst_fc_check(struct net_device *dev,
 			      int ip_type, u32 mark, unsigned int len)
@@ -819,12 +851,20 @@ int qmi_rmnet_set_powersave_mode(void *port, uint8_t enable)
 }
 EXPORT_SYMBOL(qmi_rmnet_set_powersave_mode);
 
+<<<<<<< HEAD
+=======
+//void qmi_rmnet_work_restart(void *port)
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 static void qmi_rmnet_work_restart(void *port)
 {
 	if (!rmnet_ps_wq || !rmnet_work)
 		return;
 	queue_delayed_work(rmnet_ps_wq, &rmnet_work->work, NO_DELAY);
 }
+<<<<<<< HEAD
+=======
+//EXPORT_SYMBOL(qmi_rmnet_work_restart);
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 
 static void qmi_rmnet_check_stats(struct work_struct *work)
 {
@@ -832,6 +872,8 @@ static void qmi_rmnet_check_stats(struct work_struct *work)
 	struct qmi_info *qmi;
 	u64 rxd, txd;
 	u64 rx, tx;
+	bool dl_msg_active;
+
 	bool dl_msg_active;
 
 	real_work = container_of(to_delayed_work(work),
@@ -845,10 +887,13 @@ static void qmi_rmnet_check_stats(struct work_struct *work)
 		return;
 
 	if (qmi->ps_enabled) {
+<<<<<<< HEAD
 
 		/* Ready to accept grant */
 		qmi->ps_ignore_grant = false;
 
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 		/* Register to get QMI DFC and DL marker */
 		if (qmi_rmnet_set_powersave_mode(real_work->port, 0) < 0) {
 			/* If this failed need to retry quickly */
@@ -857,10 +902,16 @@ static void qmi_rmnet_check_stats(struct work_struct *work)
 			return;
 
 		}
+<<<<<<< HEAD
 		qmi->ps_enabled = false;
 
 		/* Do a query when coming out of powersave */
 		qmi_rmnet_query_flows(qmi);
+=======
+
+//		qmi->ps_enabled = 0;
+		qmi->ps_enabled = false;
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 
 		if (rmnet_get_powersave_notif(real_work->port))
 			qmi_rmnet_ps_off_notify(real_work->port);
@@ -877,6 +928,7 @@ static void qmi_rmnet_check_stats(struct work_struct *work)
 	dl_msg_active = qmi->dl_msg_active;
 	qmi->dl_msg_active = false;
 
+<<<<<<< HEAD
 	if (!rxd && !txd) {
 		/* If no DL msg received and there is a flow disabled,
 		 * (likely in RLF), no need to enter powersave
@@ -886,11 +938,24 @@ static void qmi_rmnet_check_stats(struct work_struct *work)
 			goto end;
 
 		/* Deregister to suppress QMI DFC and DL marker */
+=======
+
+	if (!rxd && !txd) {
+
+		//If no DL msg  and flow disabled,  no need to  powersave
+		if (!dl_msg_active &&
+			!rmnet_all_flows_enabled(real_work->port))
+			goto end;
+		/* Deregister to suppress QMI DFC and DL marker */
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 		if (qmi_rmnet_set_powersave_mode(real_work->port, 1) < 0) {
-			queue_delayed_work(rmnet_ps_wq,
+			if (rmnet_ps_wq)
+				queue_delayed_work(rmnet_ps_wq,
 					   &real_work->work, PS_INTERVAL);
 			return;
 		}
+<<<<<<< HEAD
 		qmi->ps_enabled = true;
 
 		/* Ignore grant after going into powersave */
@@ -900,6 +965,16 @@ static void qmi_rmnet_check_stats(struct work_struct *work)
 		 * can trigger the work again
 		 */
 		clear_bit(PS_WORK_ACTIVE_BIT, &qmi->ps_work_active);
+=======
+
+
+//		qmi->ps_enabled = 1;
+//		clear_bit(PS_WORK_ACTIVE_BIT, &qmi->ps_work_active);
+		qmi->ps_enabled = true;
+		//Clear the bit before enabling flow
+		clear_bit(PS_WORK_ACTIVE_BIT, &qmi->ps_work_active);
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 		rmnet_enable_all_flows(real_work->port);
 
 		if (rmnet_get_powersave_notif(real_work->port))
@@ -908,7 +983,8 @@ static void qmi_rmnet_check_stats(struct work_struct *work)
 		return;
 	}
 end:
-	queue_delayed_work(rmnet_ps_wq, &real_work->work, PS_INTERVAL);
+	if (rmnet_ps_wq)
+		queue_delayed_work(rmnet_ps_wq, &real_work->work, PS_INTERVAL);
 }
 
 static void qmi_rmnet_work_set_active(void *port, int status)
@@ -987,6 +1063,7 @@ void qmi_rmnet_set_dl_msg_active(void *port)
 }
 EXPORT_SYMBOL(qmi_rmnet_set_dl_msg_active);
 
+<<<<<<< HEAD
 void qmi_rmnet_flush_ps_wq(void)
 {
 	if (rmnet_ps_wq)
@@ -1005,4 +1082,6 @@ bool qmi_rmnet_ignore_grant(void *port)
 }
 EXPORT_SYMBOL(qmi_rmnet_ignore_grant);
 
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 #endif

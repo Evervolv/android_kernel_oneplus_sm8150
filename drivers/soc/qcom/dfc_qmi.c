@@ -16,7 +16,10 @@
 #include <linux/soc/qcom/qmi.h>
 #include <soc/qcom/rmnet_qmi.h>
 #include <soc/qcom/qmi_rmnet.h>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 #include "qmi_rmnet_i.h"
 #define CREATE_TRACE_POINTS
 #include <trace/events/dfc.h>
@@ -1045,9 +1048,17 @@ static int dfc_all_bearer_flow_ctl(struct net_device *dev,
 			qmi_rmnet_grant_per(bearer_itm->grant_size);
 		bearer_itm->seq = fc_info->seq_num;
 		bearer_itm->ack_req = ack_req;
+<<<<<<< HEAD
 		bearer_itm->tcp_bidir = DFC_IS_TCP_BIDIR(ancillary);
 		bearer_itm->last_grant = fc_info->num_bytes;
 		bearer_itm->last_seq = fc_info->seq_num;
+=======
+		bearer_itm->ancillary = ancillary;
+
+		bearer_itm->last_grant = fc_info->num_bytes;
+		bearer_itm->last_seq = fc_info->seq_num;
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 	}
 
 	list_for_each_entry(flow_itm, &qos->flow_head, list) {
@@ -1102,7 +1113,14 @@ static int dfc_update_fc_map(struct net_device *dev, struct qos_info *qos,
 		itm->last_grant = fc_info->num_bytes;
 		itm->last_seq = fc_info->seq_num;
 
+<<<<<<< HEAD
 		if (action)
+=======
+		itm->last_grant = fc_info->num_bytes;
+		itm->last_seq = fc_info->seq_num;
+
+		if (action != -1)
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 			rc = dfc_bearer_flow_ctl(dev, itm, qos);
 	} else {
 		pr_debug("grant %u before flow activate", fc_info->num_bytes);
@@ -1279,6 +1297,10 @@ static void dfc_qmi_ind_work(struct work_struct *work)
 	local_bh_enable();
 
 	qmi_rmnet_set_dl_msg_active(dfc->rmnet_port);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 }
 
 static void dfc_clnt_ind_cb(struct qmi_handle *qmi, struct sockaddr_qrtr *sq,

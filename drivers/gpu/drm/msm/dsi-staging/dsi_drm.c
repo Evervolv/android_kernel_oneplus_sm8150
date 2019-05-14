@@ -384,7 +384,11 @@ static bool dsi_bridge_mode_fixup(struct drm_bridge *bridge,
 		if (rc) {
 			pr_err("[%s] seamless mode mismatch failure rc=%d\n",
 				c_bridge->display->name, rc);
+<<<<<<< HEAD
 			return false;
+=======
+//			return false;
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 		}
 
 		cur_mode = crtc_state->crtc->mode;

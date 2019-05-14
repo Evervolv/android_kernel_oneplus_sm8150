@@ -1415,10 +1415,17 @@ static irqreturn_t geni_spi_irq(int irq, void *data)
 	}
 exit_geni_spi_irq:
 	geni_write_reg(m_irq, mas->base, SE_GENI_M_IRQ_CLEAR);
+<<<<<<< HEAD
 	if (mas->cmd_done) {
 		mas->cmd_done = false;
 		complete(&mas->xfer_done);
 	}
+=======
+    if (mas->cmd_done) {
+         mas->cmd_done = false;
+         complete(&mas->xfer_done);
+    }
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 	return IRQ_HANDLED;
 }
 

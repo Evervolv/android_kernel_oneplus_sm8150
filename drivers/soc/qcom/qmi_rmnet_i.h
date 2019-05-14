@@ -41,11 +41,21 @@ struct rmnet_bearer_map {
 	u32 grant_thresh;
 	u16 seq;
 	u8  ack_req;
+<<<<<<< HEAD
 	u32 last_grant;
 	u16 last_seq;
 	bool tcp_bidir;
 	bool rat_switch;
 	bool tx_off;
+=======
+
+//	u32 grant_before_ps;
+//	u16 seq_before_ps;
+	u32 last_grant;
+	u16 last_seq;
+
+	u32 ancillary;
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 };
 
 struct svc_info {
@@ -76,9 +86,17 @@ struct qmi_info {
 	void *dfc_clients[MAX_CLIENT_NUM];
 	void *dfc_pending[MAX_CLIENT_NUM];
 	unsigned long ps_work_active;
+<<<<<<< HEAD
 	bool ps_enabled;
 	bool dl_msg_active;
 	bool ps_ignore_grant;
+=======
+
+//	int ps_enabled;
+	bool ps_enabled;
+	bool dl_msg_active;
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 };
 
 enum data_ep_type_enum_v01 {

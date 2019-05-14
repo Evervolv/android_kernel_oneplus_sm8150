@@ -47,8 +47,16 @@
 /* Indicate backport support for per chain rssi scan */
 #define CFG80211_SCAN_PER_CHAIN_RSSI_SUPPORT 1
 
+<<<<<<< HEAD
 /* Indicate backport support for oce scan capability flags */
 #define CFG80211_SCAN_OCE_CAPABILITY_SUPPORT 1
+=======
+/* Indicate backport support for DBS scan control */
+#define CFG80211_SCAN_DBS_CONTROL_SUPPORT 1
+
+/* Indicate backport support for per chain rssi scan */
+#define CFG80211_SCAN_PER_CHAIN_RSSI_SUPPORT 1
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 
 /**
  * DOC: Introduction

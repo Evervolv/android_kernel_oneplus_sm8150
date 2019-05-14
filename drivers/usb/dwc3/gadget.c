@@ -2114,7 +2114,11 @@ static int dwc3_gadget_run_stop(struct dwc3 *dwc, int is_on, int suspend)
 	if (!is_on) {
 		/*
 		 * Clear out any pending events (i.e. End Transfer Command
+<<<<<<< HEAD
 		 * Complete).
+=======
+		 * Complete)
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 		 */
 		reg1 = dwc3_readl(dwc->regs, DWC3_GEVNTCOUNT(0));
 		reg1 &= DWC3_GEVNTCOUNT_MASK;
@@ -2187,8 +2191,15 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
 				msecs_to_jiffies(DWC3_PULL_UP_TIMEOUT));
 		if (ret == 0) {
 			dev_err(dwc->dev, "timed out waiting for SETUP phase\n");
+<<<<<<< HEAD
 			dbg_event(0xFF, "Pullup timeout put",
 				atomic_read(&dwc->dev->power.usage_count));
+=======
+			pm_runtime_put_autosuspend(dwc->dev);
+			dbg_event(0xFF, "Pullup timeout put",
+				atomic_read(&dwc->dev->power.usage_count));
+			return -ETIMEDOUT;
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 		}
 	}
 
@@ -3199,8 +3210,6 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
 	dwc->b_suspend = false;
 	dwc3_notify_event(dwc, DWC3_CONTROLLER_NOTIFY_OTG_EVENT, 0);
 
-	usb_gadget_vbus_draw(&dwc->gadget, 100);
-
 	dwc3_reset_gadget(dwc);
 
 	reg = dwc3_readl(dwc->regs, DWC3_DCTL);
@@ -3613,8 +3622,6 @@ static void dwc3_gadget_interrupt(struct dwc3 *dwc,
 			if (dwc->gadget.state >= USB_STATE_CONFIGURED)
 				dwc3_gadget_suspend_interrupt(dwc,
 						event->event_info);
-			else
-				usb_gadget_vbus_draw(&dwc->gadget, 2);
 		}
 		break;
 	case DWC3_DEVICE_EVENT_SOF:
@@ -3765,6 +3772,7 @@ static irqreturn_t dwc3_check_event_buf(struct dwc3_event_buffer *evt)
 
 	/* Controller is being halted, ignore the interrupts */
 	if (!dwc->pullups_connected) {
+<<<<<<< HEAD
 		/*
 		 * Even with controller halted, there is a possibility
 		 * that the interrupt line is kept asserted.
@@ -3774,6 +3782,9 @@ static irqreturn_t dwc3_check_event_buf(struct dwc3_event_buffer *evt)
 		count = dwc3_readl(dwc->regs, DWC3_GEVNTCOUNT(0));
 		count &= DWC3_GEVNTCOUNT_MASK;
 		dbg_event(0xFF, "NO_PULLUP", count);
+=======
+		dbg_event(0xFF, "NO_PULLUP", 0);
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 		return IRQ_HANDLED;
 	}
 

@@ -27,7 +27,13 @@ struct net_device *rmnet_get_rmnet_dev(void *port, u8 mux_id);
 void rmnet_reset_qmi_pt(void *port);
 void rmnet_init_qmi_pt(void *port, void *qmi);
 void rmnet_enable_all_flows(void *port);
+<<<<<<< HEAD
 bool rmnet_all_flows_enabled(void *port);
+=======
+
+bool rmnet_all_flows_enabled(void *port);
+
+>>>>>>> 242c3602bce7... Synchronize codes for Oneplus 7 Pro Oxygen OS 9.5.3.GM21AA
 void rmnet_set_powersave_format(void *port);
 void rmnet_clear_powersave_format(void *port);
 void rmnet_get_packets(void *port, u64 *rx, u64 *tx);
