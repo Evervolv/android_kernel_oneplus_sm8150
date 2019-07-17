@@ -1,0 +1,8 @@
+config TOUCHPANEL_SAMSUNG_S6SY761
+	bool "Samsung s6sy761 Touchpanel Driver"
+        depends on TOUCHPANEL_SAMSUNG
+        help
+          Say Y here if you have a Samsung s6sy761 Touchpanel.
+
+          If unsure, say N.
+
