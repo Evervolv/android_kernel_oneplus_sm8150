@@ -76,6 +76,7 @@
 };
 
 &dsi_samsung_sofef00_m_video {
+	qcom,ulps-enabled;
 	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
 	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
 	qcom,mdss-dsi-bl-min-level = <1>;

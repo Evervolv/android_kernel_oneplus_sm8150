@@ -82,6 +82,10 @@
 		qcom,finger-detect-gpio = <&tlmm 101 0>;
 };
 
+&mdss_dsi_phy0 {
+	qcom,panel-allow-phy-poweroff;
+};
+
 &sde_dsi {
 	pinctrl-names = "panel_active", "panel_suspend","default";
 	pinctrl-0 = <&sde_dsi_active &sde_te_active &display_panel_avdd_eldo_default>;
