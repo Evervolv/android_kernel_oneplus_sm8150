@@ -11,7 +11,7 @@
 		status = "disabled";
 	};
 	vendor {
-		dev = "/dev/block/platform/soc/1d84000.sdhci/by-name/vendor";
+		dev = "/dev/block/platform/soc/1d84000.ufshc/by-name/vendor";
 	};
 };
 
