@@ -1287,4 +1287,30 @@ config TOUCHSCREEN_SYNAPTICS_TCM
 	  If unsure, say N.
 
 source "drivers/input/touchscreen/synaptics_tcm/Kconfig"
+
+config TOUCHPANEL_ONEPLUS
+	bool "OnePlus Touchpanel"
+	depends on I2C
+	help
+	  Say Y here if you have a OnePlus Touchpanel.
+
+config TOUCHPANEL_SAMSUNG
+	bool "Samsung Touchpanel Driver"
+	depends on TOUCHPANEL_ONEPLUS
+	help
+	  Say Y here if you have a Samsung Touchpanel.
+
+	  If unsure, say N.
+
+source "drivers/input/touchscreen/samsung/Kconfig"
+
+config TOUCHPANEL_SYNAPTICS
+	bool "Synaptics Touchpanel Driver"
+	depends on TOUCHPANEL_ONEPLUS
+	help
+	  Say Y here if you have a Synaptics Touchpanel.
+
+	  If unsure, say N.
+
+source "drivers/input/touchscreen/synaptics/Kconfig"
 endif
