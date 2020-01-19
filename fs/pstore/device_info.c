@@ -81,7 +81,6 @@ static void  pstore_device_info_init(void )
 {
     size_t oldsize;
     size_t size =0;
-    unsigned long flags;
 
     struct ramoops_context *cxt = psinfo->data;
     struct pstore_record record;
@@ -103,14 +102,14 @@ static void  pstore_device_info_init(void )
         size = psinfo->bufsize;
 
     if (oops_in_progress) {
-        if (!spin_trylock_irqsave(&psinfo->buf_lock, flags))
+        if (!down_trylock(&psinfo->buf_lock))
             return;
     } else {
-        spin_lock_irqsave(&psinfo->buf_lock, flags);
+        down(&psinfo->buf_lock);
     }
     memset(record.buf, ' ', size);
     psinfo->write(&record);
-    spin_unlock_irqrestore(&psinfo->buf_lock, flags);
+    up(&psinfo->buf_lock);
 
     psinfo->bufsize = oldsize ;
 }
@@ -125,7 +124,6 @@ static void pstore_write_device_info(const char *s, unsigned c)
 
 	while (s < e) {
 		struct pstore_record record;
-		unsigned long flags;
 
 		pstore_record_init(&record, psinfo);
 		record.type = PSTORE_TYPE_DEVICE_INFO;
@@ -134,15 +132,15 @@ static void pstore_write_device_info(const char *s, unsigned c)
 			c = psinfo->bufsize;
 
 		if (oops_in_progress) {
-			if (!spin_trylock_irqsave(&psinfo->buf_lock, flags))
-				break;
+			if (!down_trylock(&psinfo->buf_lock))
+				return;
 		} else {
-			spin_lock_irqsave(&psinfo->buf_lock, flags);
+			down(&psinfo->buf_lock);
 		}
 		record.buf = (char *)s;
 		record.size = c;
 		psinfo->write(&record);
-		spin_unlock_irqrestore(&psinfo->buf_lock, flags);
+		up(&psinfo->buf_lock);
 		s += c;
 		c = e - s;
 	}
