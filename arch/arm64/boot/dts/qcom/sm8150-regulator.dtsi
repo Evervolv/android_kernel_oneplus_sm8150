@@ -908,48 +908,24 @@
 		};
 	};
 
-	rpmh-regulator-ldof2 {
-		compatible = "qcom,rpmh-vrm-regulator";
-		mboxes = <&apps_rsc 0>;
-		qcom,resource-name = "ldof2";
-		L2F: pm8009_l2: regulator-pm8009-l2 {
-			regulator-name = "pm8009_l2";
-			qcom,set = <RPMH_REGULATOR_SET_ALL>;
-			regulator-min-microvolt = <1000000>;
-			regulator-max-microvolt = <1200000>;
-		};
-	};
-
-	rpmh-regulator-ldof5 {
-		compatible = "qcom,rpmh-xob-regulator";
-		mboxes = <&apps_rsc 0>;
-		qcom,resource-name = "ldof5";
-		L5F: pm8009_l5: regulator-pm8009-l5 {
-			regulator-name = "pm8009_l5";
-			qcom,set = <RPMH_REGULATOR_SET_ALL>;
-			regulator-min-microvolt = <2800000>;
-			regulator-max-microvolt = <2800000>;
-		};
-	};
-
-	rpmh-regulator-ldof6 {
-		compatible = "qcom,rpmh-xob-regulator";
-		mboxes = <&apps_rsc 0>;
-		qcom,resource-name = "ldof6";
-		L6F: pm8009_l6: regulator-pm8009-l6 {
-			regulator-name = "pm8009_l6";
-			qcom,set = <RPMH_REGULATOR_SET_ALL>;
-			regulator-min-microvolt = <2856000>;
-			regulator-max-microvolt = <2856000>;
-		};
-	};
-
 	rpmh-regulator-ldof1 {
 		compatible = "qcom,rpmh-vrm-regulator";
 		mboxes = <&apps_rsc 0>;
 		qcom,resource-name = "ldof1";
 		L1F: pm8009_l1: regulator-pm8009-l1 {
 			regulator-name = "pm8009_l1";
+			qcom,set = <RPMH_REGULATOR_SET_ALL>;
+			regulator-min-microvolt = <1000000>;
+			regulator-max-microvolt = <1200000>;
+		};
+	};
+
+	rpmh-regulator-ldof2 {
+		compatible = "qcom,rpmh-vrm-regulator";
+		mboxes = <&apps_rsc 0>;
+		qcom,resource-name = "ldof2";
+		L2F: pm8009_l2: regulator-pm8009-l2 {
+			regulator-name = "pm8009_l2";
 			qcom,set = <RPMH_REGULATOR_SET_ALL>;
 			regulator-min-microvolt = <1000000>;
 			regulator-max-microvolt = <1200000>;
@@ -977,6 +953,30 @@
 			qcom,set = <RPMH_REGULATOR_SET_ALL>;
 			regulator-min-microvolt = <1000000>;
 			regulator-max-microvolt = <1200000>;
+		};
+	};
+
+	rpmh-regulator-ldof5 {
+		compatible = "qcom,rpmh-xob-regulator";
+		mboxes = <&apps_rsc 0>;
+		qcom,resource-name = "ldof5";
+		L5F: pm8009_l5: regulator-pm8009-l5 {
+			regulator-name = "pm8009_l5";
+			qcom,set = <RPMH_REGULATOR_SET_ALL>;
+			regulator-min-microvolt = <2800000>;
+			regulator-max-microvolt = <2800000>;
+		};
+	};
+
+	rpmh-regulator-ldof6 {
+		compatible = "qcom,rpmh-xob-regulator";
+		mboxes = <&apps_rsc 0>;
+		qcom,resource-name = "ldof6";
+		L6F: pm8009_l6: regulator-pm8009-l6 {
+			regulator-name = "pm8009_l6";
+			qcom,set = <RPMH_REGULATOR_SET_ALL>;
+			regulator-min-microvolt = <2856000>;
+			regulator-max-microvolt = <2856000>;
 		};
 	};
 
