@@ -571,10 +571,13 @@ static u8 encode_bMaxPower(enum usb_device_speed speed,
 	switch (speed) {
 	case USB_SPEED_SUPER:
 	case USB_SPEED_SUPER_PLUS:
-		return (u8)(val / 8);
+		/*
+		 * USB 3.x supports up to 900mA, but since 900 isn't divisible
+		 * by 8 the integral division will effectively cap to 896mA.
+		 */
+		return min(val, 900U) / 8;
 	default:
-		/* only SuperSpeed and faster support > 500mA */
-		return DIV_ROUND_UP(min(val, 500U), 2);
+		return min(val, 500U) / 2;
 	}
 }
 
@@ -976,6 +979,8 @@ static int set_config(struct usb_composite_dev *cdev,
 	power = c->MaxPower ? c->MaxPower : CONFIG_USB_GADGET_VBUS_DRAW;
 	if (gadget->speed < USB_SPEED_SUPER)
 		power = min(power, 500U);
+	else
+		power = min(power, 900U);
 
 done:
 	usb_gadget_vbus_draw(gadget, power);
@@ -2421,7 +2426,7 @@ void composite_resume(struct usb_gadget *gadget)
 {
 	struct usb_composite_dev	*cdev = get_gadget_data(gadget);
 	struct usb_function		*f;
-	unsigned int			maxpower;
+	unsigned			maxpower;
 	int				ret;
 	unsigned long			flags;
 
@@ -2466,6 +2471,9 @@ void composite_resume(struct usb_gadget *gadget)
 		maxpower = maxpower ? maxpower : CONFIG_USB_GADGET_VBUS_DRAW;
 		if (gadget->speed < USB_SPEED_SUPER)
 			maxpower = min(maxpower, 500U);
+		else
+			maxpower = min(maxpower, 900U);
+
 		usb_gadget_vbus_draw(gadget, maxpower);
 	}
 
