@@ -43,12 +43,6 @@
 #include "power.h"
 #include <soc/qcom/boot_stats.h>
 
-#include <linux/gpio.h>
-#include <linux/soc/qcom/smem_state.h>
-extern struct qcom_smem_state *qstate;
-#define PROC_AWAKE_ID 12 /* 12th bit */
-#define AWAKE_BIT BIT(PROC_AWAKE_ID)
-
 const char * const pm_labels[] = {
 	[PM_SUSPEND_TO_IDLE] = "freeze",
 	[PM_SUSPEND_STANDBY] = "standby",
@@ -76,7 +70,6 @@ static DECLARE_WAIT_QUEUE_HEAD(s2idle_wait_head);
 
 enum s2idle_states __read_mostly s2idle_state;
 static DEFINE_RAW_SPINLOCK(s2idle_lock);
-extern int check_touchirq_triggerd(void);
 
 #ifdef CONFIG_PM_SLEEP_MONITOR
 /* Suspend monitor thread toggle reason */
@@ -623,12 +616,6 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 	stop_suspend_mon();
 #endif
 
-	if (check_touchirq_triggerd()) {
-		pr_err("[TP]touchpanel irq status is low\n");
-		error = -EBUSY;
-		goto Enable_irq;
-	}
-
 	error = syscore_suspend();
 	if (!error) {
 		*wakeup = pm_wakeup_pending();
@@ -649,7 +636,6 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
 	start_suspend_mon();
 #endif
 
-Enable_irq:
 	arch_suspend_enable_irqs();
 	BUG_ON(irqs_disabled());
 
@@ -824,9 +810,6 @@ int pm_suspend(suspend_state_t state)
 	if (state <= PM_SUSPEND_ON || state >= PM_SUSPEND_MAX)
 		return -EINVAL;
 
-	qcom_smem_state_update_bits(qstate, AWAKE_BIT, 0);
-	pr_err("%s: PM_SUSPEND_PREPARE smp2p_change_state", __func__); 
-
 	pm_suspend_marker("entry");
 	pr_info("suspend entry (%s)\n", mem_sleep_labels[state]);
 
@@ -835,10 +818,6 @@ int pm_suspend(suspend_state_t state)
 #endif
 
 	error = enter_state(state);
-
-	qcom_smem_state_update_bits(qstate, AWAKE_BIT, AWAKE_BIT);
-	pr_err("%s: PM_POST_SUSPEND smp2p_change_state", __func__);
-
 	if (error) {
 		suspend_stats.fail++;
 		dpm_save_failed_errno(error);
