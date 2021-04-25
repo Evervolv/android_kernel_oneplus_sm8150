@@ -209,6 +209,7 @@ void dsi_rect_intersect(const struct dsi_rect *r1,
 }
 
 extern int aod_layer_hide;
+
 int dsi_display_set_backlight(struct drm_connector *connector,
 		void *display, u32 bl_lvl)
 {
@@ -218,6 +219,7 @@ int dsi_display_set_backlight(struct drm_connector *connector,
 	u64 bl_temp;
 	int rc = 0;
 	static int gamma_read_flag;
+
 	if (dsi_display == NULL || dsi_display->panel == NULL)
 		return -EINVAL;
 
@@ -227,7 +229,6 @@ int dsi_display_set_backlight(struct drm_connector *connector,
 	if (!dsi_panel_initialized(panel)) {
 		panel->hbm_backlight = bl_lvl;
 		panel->bl_config.bl_level = bl_lvl;
-		pr_err("HBM_backight =%d\n",panel->hbm_backlight);
 		rc = -EINVAL;
 		goto error;
 	}
@@ -236,31 +237,28 @@ int dsi_display_set_backlight(struct drm_connector *connector,
 		if (bl_lvl != 0 && panel->bl_config.bl_level == 0) {
 			if (panel->naive_display_p3_mode) {
 				mdelay(20);
-				pr_err("Send DSI_CMD_SET_NATIVE_DISPLAY_P3_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_NATIVE_DISPLAY_P3_ON);
 			}
+
 			if (panel->naive_display_wide_color_mode) {
 				mdelay(20);
-				pr_err("Send DSI_CMD_SET_NATIVE_DISPLAY_WIDE_COLOR_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_NATIVE_DISPLAY_WIDE_COLOR_ON);
 			}
+
 			if (panel->naive_display_srgb_color_mode) {
 				mdelay(20);
-				pr_err("Send DSI_CMD_SET_NATIVE_DISPLAY_SRGB_COLOR_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_NATIVE_DISPLAY_SRGB_COLOR_ON);
 			}
+
 			if (panel->naive_display_customer_srgb_mode) {
-				pr_err("Send DSI_CMD_LOADING_CUSTOMER_RGB_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_CUSTOMER_RGB_ON);
 			} else {
-				pr_err("Send DSI_CMD_LOADING_CUSTOMER_RGB_OFF cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_CUSTOMER_RGB_OFF);
 			}
+
 			if (panel->naive_display_customer_p3_mode) {
-				pr_err("Send DSI_CMD_LOADING_CUSTOMER_P3_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_CUSTOMER_P3_ON);
 			} else {
-				pr_err("Send DSI_CMD_LOADING_CUSTOMER_P3_OFF cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_CUSTOMER_P3_OFF);
 			}
 		}
@@ -270,39 +268,27 @@ int dsi_display_set_backlight(struct drm_connector *connector,
 		if (bl_lvl != 0 && panel->bl_config.bl_level == 0) {
 			if (panel->naive_display_p3_mode) {
 				mdelay(20);
-				pr_err("Send DSI_CMD_SET_NATIVE_DISPLAY_P3_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_NATIVE_DISPLAY_P3_ON);
 			}
 			if (panel->naive_display_wide_color_mode) {
 				mdelay(20);
-				pr_err("Send DSI_CMD_SET_NATIVE_DISPLAY_WIDE_COLOR_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_NATIVE_DISPLAY_WIDE_COLOR_ON);
 			}
 			if (panel->naive_display_srgb_color_mode) {
 				mdelay(20);
-				pr_err("Send DSI_CMD_SET_NATIVE_DISPLAY_SRGB_COLOR_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_NATIVE_DISPLAY_SRGB_COLOR_ON);
 			}
 			if (panel->naive_display_loading_effect_mode) {
-				pr_err("Send DSI_CMD_LOADING_EFFECT_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_EFFECT_ON);
 			} else {
-				pr_err("Send DSI_CMD_LOADING_EFFECT_OFF cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_EFFECT_OFF);
 			}
 			if (panel->naive_display_customer_srgb_mode) {
-				pr_err("Send DSI_CMD_LOADING_CUSTOMER_RGB_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_CUSTOMER_RGB_ON);
-			} else {
-				pr_err("Send DSI_CMD_LOADING_CUSTOMER_RGB_OFF cmds\n");
-				//rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_CUSTOMER_RGB_OFF);
 			}
+
 			if (panel->naive_display_customer_p3_mode) {
-				pr_err("Send DSI_CMD_LOADING_CUSTOMER_P3_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_CUSTOMER_P3_ON);
-			} else {
-				pr_err("Send DSI_CMD_LOADING_CUSTOMER_P3_OFF cmds\n");
-				//rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_CUSTOMER_P3_OFF);
 			}
 		}
 	}
@@ -311,38 +297,34 @@ int dsi_display_set_backlight(struct drm_connector *connector,
 		if (bl_lvl != 0 && panel->bl_config.bl_level == 0) {
 			if (panel->naive_display_p3_mode) {
 				msleep(20);
-				pr_err("Send DSI_CMD_SET_NATIVE_DISPLAY_P3_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_NATIVE_DISPLAY_P3_ON);
 			}
+
 			if (panel->naive_display_wide_color_mode) {
 				msleep(20);
-				pr_err("Send DSI_CMD_SET_NATIVE_DISPLAY_WIDE_COLOR_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_NATIVE_DISPLAY_WIDE_COLOR_ON);
 			}
+
 			if (panel->naive_display_srgb_color_mode) {
 				msleep(20);
-				pr_err("Send DSI_CMD_SET_NATIVE_DISPLAY_SRGB_COLOR_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_NATIVE_DISPLAY_SRGB_COLOR_ON);
 			}
+
 			if (panel->naive_display_loading_effect_mode) {
-				pr_err("Send DSI_CMD_LOADING_EFFECT_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_EFFECT_ON);
 			} else {
-				pr_err("Send DSI_CMD_LOADING_EFFECT_OFF cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_EFFECT_OFF);
 			}
+
 			if (panel->naive_display_customer_srgb_mode) {
-				pr_err("Send DSI_CMD_LOADING_CUSTOMER_RGB_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_CUSTOMER_RGB_ON);
 			} else {
-				pr_err("Send DSI_CMD_LOADING_CUSTOMER_RGB_OFF cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_CUSTOMER_RGB_OFF);
 			}
+
 			if (panel->naive_display_customer_p3_mode) {
-				pr_err("Send DSI_CMD_LOADING_CUSTOMER_P3_ON cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_CUSTOMER_P3_ON);
 			} else {
-				pr_err("Send DSI_CMD_LOADING_CUSTOMER_P3_OFF cmds\n");
 				rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_LOADING_CUSTOMER_P3_OFF);
 			}
 		}
@@ -971,6 +953,7 @@ static int dsi_panel_tx_cmd_set_op(struct dsi_panel *panel,
 			 panel->name, type);
 		goto error;
 	}
+
 	for (i = 0; i < count; i++) {
 		if (state == DSI_CMD_SET_STATE_LP)
 			cmds->msg.flags |= MIPI_DSI_MSG_USE_LPM;
@@ -984,6 +967,7 @@ static int dsi_panel_tx_cmd_set_op(struct dsi_panel *panel,
 			pr_err("failed to set cmds(%d), rc=%d\n", type, rc);
 			goto error;
 		}
+
 		if (cmds->post_wait_ms)
 			usleep_range(cmds->post_wait_ms*1000,
 					((cmds->post_wait_ms*1000)+10));
@@ -1036,100 +1020,120 @@ static int dsi_display_status_reg_read(struct dsi_display *display)
 		pr_err("cmd engine enable failed\n");
 		return -EPERM;
 	}
+
 	mode = display->panel->cur_mode;
 	panel = display->panel;
 
 	if (panel->hw_type == DSI_PANEL_SAMSUNG_S6E3HC2) {
 		count = mode->priv_info->cmd_sets[DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_ON].count;
-		if (!count) {
-			pr_err("This panel does not read register\n");
-		} else {
+		if (count) {
 			rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_ON);
 		}
+
 		cmds1 = mode->priv_info->cmd_sets[DSI_CMD_SET_PANEL_ID1].cmds;
 		if (cmds1->last_command) {
 			cmds1->msg.flags |= MIPI_DSI_MSG_LASTCOMMAND;
 			flags |= DSI_CTRL_CMD_LAST_COMMAND;
 		}
+
 		flags |= (DSI_CTRL_CMD_FETCH_MEMORY | DSI_CTRL_CMD_READ);
 		cmds1->msg.rx_buf = buf;
 		cmds1->msg.rx_len = 1;
+
 		rc = dsi_ctrl_cmd_transfer(m_ctrl->ctrl, &cmds1->msg, flags);
 		if (rc <= 0)
 			pr_err("rx cmd transfer failed rc=%d\n", rc);
+
 		rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_OFF);
 
 		memcpy(temp_buffer_1, cmds1->msg.rx_buf, 1);
 		memset(buf, 0, sizeof(buf));
 
 		rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_ON);
+
 		cmds2 = mode->priv_info->cmd_sets[DSI_CMD_SET_PANEL_ID2].cmds;
 		if (cmds2->last_command) {
 			cmds2->msg.flags |= MIPI_DSI_MSG_LASTCOMMAND;
 			flags |= DSI_CTRL_CMD_LAST_COMMAND;
 		}
+
 		flags |= (DSI_CTRL_CMD_FETCH_MEMORY | DSI_CTRL_CMD_READ);
 		cmds2->msg.rx_buf = buf;
 		cmds2->msg.rx_len = 1;
+
 		rc = dsi_ctrl_cmd_transfer(m_ctrl->ctrl, &cmds2->msg, flags);
 		if (rc <= 0)
 			pr_err("rx cmd transfer failed rc=%d\n", rc);
+
 		rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_OFF);
 		
 		memcpy(temp_buffer_2, cmds2->msg.rx_buf, 1);
 		memset(buf, 0, sizeof(buf));
 
 		rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_ON);
+
 		cmds3 = mode->priv_info->cmd_sets[DSI_CMD_SET_PANEL_ID3].cmds;
 		if (cmds3->last_command) {
 			cmds3->msg.flags |= MIPI_DSI_MSG_LASTCOMMAND;
 			flags |= DSI_CTRL_CMD_LAST_COMMAND;
 		}
+
 		flags |= (DSI_CTRL_CMD_FETCH_MEMORY | DSI_CTRL_CMD_READ);
 		cmds3->msg.rx_buf = buf;
 		cmds3->msg.rx_len = 1;
+
 		rc = dsi_ctrl_cmd_transfer(m_ctrl->ctrl, &cmds3->msg, flags);
 		if (rc <= 0)
 			pr_err("rx cmd transfer failed rc=%d\n", rc);
+
 		rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_OFF);
 				
 		memcpy(temp_buffer_3, cmds3->msg.rx_buf, 1);
 
 		rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_ON);
+
 		cmds4 = mode->priv_info->cmd_sets[DSI_CMD_SET_PANEL_ID4].cmds;
 		if (cmds4->last_command) {
 			cmds4->msg.flags |= MIPI_DSI_MSG_LASTCOMMAND;
 			flags |= DSI_CTRL_CMD_LAST_COMMAND;
 		}
+
 		flags |= (DSI_CTRL_CMD_FETCH_MEMORY | DSI_CTRL_CMD_READ);
 		cmds4->msg.rx_buf = buf;
 		cmds4->msg.rx_len = 1;
+
 		rc = dsi_ctrl_cmd_transfer(m_ctrl->ctrl, &cmds4->msg, flags);
 		if (rc <= 0)
 			pr_err("rx cmd transfer failed rc=%d\n", rc);
+
 		rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_OFF);
 				
 		memcpy(temp_buffer_4, cmds4->msg.rx_buf, 1);
 		memset(buf, 0, sizeof(buf));
 		
 		rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_ON);
+
 		cmds5 = mode->priv_info->cmd_sets[DSI_CMD_SET_PANEL_ID5].cmds;
 		if (cmds5->last_command) {
 			cmds5->msg.flags |= MIPI_DSI_MSG_LASTCOMMAND;
 			flags |= DSI_CTRL_CMD_LAST_COMMAND;
 		}
+
 		flags |= (DSI_CTRL_CMD_FETCH_MEMORY | DSI_CTRL_CMD_READ);
 		cmds5->msg.rx_buf = buf;
 		cmds5->msg.rx_len = 2;
+
 		rc = dsi_ctrl_cmd_transfer(m_ctrl->ctrl, &cmds5->msg, flags);
 		if (rc <= 0)
 			pr_err("rx cmd transfer failed rc=%d\n", rc);
+
 		rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_OFF);
 						
 		memcpy(temp_buffer_5, cmds5->msg.rx_buf, 2);
 		memset(buf, 0, sizeof(buf));
 
 		rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_ON);
+
 		cmds6 = mode->priv_info->cmd_sets[DSI_CMD_SET_PANEL_ID6].cmds;
 		if (cmds6->last_command) {
 			cmds6->msg.flags |= MIPI_DSI_MSG_LASTCOMMAND;
@@ -1138,9 +1142,11 @@ static int dsi_display_status_reg_read(struct dsi_display *display)
 		flags |= (DSI_CTRL_CMD_FETCH_MEMORY | DSI_CTRL_CMD_READ);
 		cmds6->msg.rx_buf = buf;
 		cmds6->msg.rx_len = 16;
+
 		rc = dsi_ctrl_cmd_transfer(m_ctrl->ctrl, &cmds6->msg, flags);
 		if (rc <= 0)
 			pr_err("rx cmd transfer failed rc=%d\n", rc);
+
 		rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_OFF);
 						
 		memcpy(temp_buffer_6, cmds6->msg.rx_buf, 16);
@@ -1154,74 +1160,77 @@ static int dsi_display_status_reg_read(struct dsi_display *display)
 			cmds7->msg.flags |= MIPI_DSI_MSG_LASTCOMMAND;
 			flags |= DSI_CTRL_CMD_LAST_COMMAND;
 		}
+
 		flags |= (DSI_CTRL_CMD_FETCH_MEMORY | DSI_CTRL_CMD_READ);
 		cmds7->msg.rx_buf = buf;
 		cmds7->msg.rx_len = 34;
+
 		rc = dsi_ctrl_cmd_transfer(m_ctrl->ctrl, &cmds7->msg, flags);
 		if (rc <= 0)
 			pr_err("rx cmd transfer failed rc=%d\n", rc);
+
 		rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_OFF);
 								
 		memcpy(temp_buffer_7, cmds7->msg.rx_buf, 34);
 
-		if((temp_buffer_6[0] !=0x80) && (temp_buffer_2[0] != 0x80)) {
+		if ((temp_buffer_6[0] != 0x80) && (temp_buffer_2[0] != 0x80)) {
 			rc = -1;
-		}
-		else {
+		} else {
 			rc = 1;
 		}
 	} else if (panel->hw_type == DSI_PANEL_SAMSUNG_S6E3FC2X01) {
 		count = mode->priv_info->cmd_sets[DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_ON].count;
-		if (!count) {
-			pr_err("This panel does not read register\n");
-		} else {
+		if (count) {
 			rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_ON);
 		}
+
 		cmds1 = mode->priv_info->cmd_sets[DSI_CMD_SET_PANEL_ID1].cmds;
 		if (cmds1->last_command) {
 			cmds1->msg.flags |= MIPI_DSI_MSG_LASTCOMMAND;
 			flags |= DSI_CTRL_CMD_LAST_COMMAND;
 		}
+
 		flags |= (DSI_CTRL_CMD_FETCH_MEMORY | DSI_CTRL_CMD_READ);
 		cmds1->msg.rx_buf = buf;
 		cmds1->msg.rx_len = 1;
+
 		rc = dsi_ctrl_cmd_transfer(m_ctrl->ctrl, &cmds1->msg, flags);
 		if (rc <= 0)
 			pr_err("rx cmd transfer failed rc=%d\n", rc);
+
 		memcpy(temp_buffer_1, cmds1->msg.rx_buf, 1);
 		count = mode->priv_info->cmd_sets[DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_ON].count;
-		if (!count) {
-			pr_err("This panel does not read register\n");
-		} else {
+		if (count) {
 			rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_ON);
 		}
+
 		cmds2 = mode->priv_info->cmd_sets[DSI_CMD_SET_PANEL_ID6].cmds;
 		if (cmds2->last_command) {
 			cmds2->msg.flags |= MIPI_DSI_MSG_LASTCOMMAND;
 			flags |= DSI_CTRL_CMD_LAST_COMMAND;
 		}
+
 		flags |= (DSI_CTRL_CMD_FETCH_MEMORY | DSI_CTRL_CMD_READ);
 		cmds2->msg.rx_buf = buf;
 		cmds2->msg.rx_len = 2;
+
 		rc = dsi_ctrl_cmd_transfer(m_ctrl->ctrl, &cmds2->msg, flags);
 		if (rc <= 0)
 			pr_err("rx cmd transfer failed rc=%d\n", rc);
+
 		memcpy(temp_buffer_6, cmds2->msg.rx_buf, 2);
 		count = mode->priv_info->cmd_sets[DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_OFF].count;
-		if (!count) {
-			pr_err("This panel does not read register\n");
-		} else {
+		if (count) {
 			rc = dsi_panel_tx_cmd_set_op(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_OFF);
 		}
+
 		if(((temp_buffer_6[0] == 132) && (temp_buffer_6[1] == 0))||(temp_buffer_1[0] != 159))
 			 rc = -1;
 		else
 			rc = 1;
 	} else 	if (panel->hw_type == DSI_PANEL_SAMSUNG_SOFEF03F_M) {
 		count = mode->priv_info->cmd_sets[DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_ON].count;
-		if (!count) {
-			pr_err("This panel does not support esd register reading\n");
-		} else {
+		if (count) {
 			rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_ON);
 		}
 
@@ -1231,9 +1240,11 @@ static int dsi_display_status_reg_read(struct dsi_display *display)
 			cmds1->msg.flags |= MIPI_DSI_MSG_LASTCOMMAND;
 			flags |= DSI_CTRL_CMD_LAST_COMMAND;
 		}
+
 		flags |= (DSI_CTRL_CMD_FETCH_MEMORY | DSI_CTRL_CMD_READ);
 		cmds1->msg.rx_buf = register_0a;
 		cmds1->msg.rx_len = 1;
+
 		rc = dsi_ctrl_cmd_transfer(m_ctrl->ctrl, &cmds1->msg, flags);
 		if (rc <= 0)
 			pr_err("rx cmd transfer failed rc=%d\n", rc);
@@ -1244,17 +1255,17 @@ static int dsi_display_status_reg_read(struct dsi_display *display)
 			cmds2->msg.flags |= MIPI_DSI_MSG_LASTCOMMAND;
 			flags |= DSI_CTRL_CMD_LAST_COMMAND;
 		}
+
 		flags |= (DSI_CTRL_CMD_FETCH_MEMORY | DSI_CTRL_CMD_READ);
 		cmds2->msg.rx_buf = register_b6;
 		cmds2->msg.rx_len = 1;
+
 		rc = dsi_ctrl_cmd_transfer(m_ctrl->ctrl, &cmds2->msg, flags);
 		if (rc <= 0)
 			pr_err("rx cmd transfer failed rc=%d\n", rc);
 
 		count = mode->priv_info->cmd_sets[DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_OFF].count;
-		if (!count) {
-			pr_err("This panel does not support esd register reading\n");
-		} else {
+		if (count) {
 			rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_READ_SAMSUNG_PANEL_REGISTER_OFF);
 		}
 
@@ -1273,8 +1284,7 @@ static int dsi_display_status_reg_read(struct dsi_display *display)
 				__func__, esd_black_count, esd_greenish_count,
 					esd_black_count + esd_greenish_count);
 			rc = -1;
-		}
-		else {
+		} else {
 			rc = 1;
 		}
 	} else {
@@ -1635,6 +1645,7 @@ static bool dsi_display_get_cont_splash_status(struct dsi_display *display)
 	}
 	return true;
 }
+
 extern int dsi_panel_set_aod_mode(struct dsi_panel *panel, int level);
 
 int dsi_display_set_power(struct drm_connector *connector,
@@ -1652,7 +1663,6 @@ int dsi_display_set_power(struct drm_connector *connector,
 
 	switch (power_mode) {
 	case SDE_MODE_DPMS_LP1:
-		pr_err("SDE_MODE_DPMS_LP1\n");
 		rc = dsi_panel_set_lp1(display->panel);
 		if (display->panel->aod_mode && display->panel->aod_mode != 2) {
 			display->panel->aod_status = 0;
@@ -1663,34 +1673,29 @@ int dsi_display_set_power(struct drm_connector *connector,
 				display->panel->name, rc);
 			}
 		}
-	break;
+		break;
 	case SDE_MODE_DPMS_LP2:
-		pr_err("SDE_MODE_DPMS_LP2\n");
 		rc = dsi_panel_set_lp2(display->panel);
-	break;
+		break;
 	case SDE_MODE_DPMS_ON:
-		pr_err("SDE_MODE_DPMS_ON\n");
 		if (display->panel->power_mode == SDE_MODE_DPMS_LP1 ||
 			display->panel->power_mode == SDE_MODE_DPMS_LP2)
 			rc = dsi_panel_set_nolp(display->panel);
-		/*send screen on cmd for TP start*/
 		blank = MSM_DRM_BLANK_UNBLANK_CUST;
 		notifier_data.data = &blank;
 		notifier_data.id = connector_state_crtc_index;
 		msm_drm_notifier_call_chain(MSM_DRM_EARLY_EVENT_BLANK, &notifier_data);
-		/*send screen on cmd for TP end*/
-	break;
+		break;
 	case SDE_MODE_DPMS_OFF:
-		/*send screen off cmd for TP start*/
 		blank = MSM_DRM_BLANK_POWERDOWN_CUST;
 		notifier_data.data = &blank;
 		notifier_data.id = connector_state_crtc_index;
 		msm_drm_notifier_call_chain(MSM_DRM_EARLY_EVENT_BLANK, &notifier_data);
-		/*send screen off cmd for TP end*/
-	break;
+		break;
 	default:
-	return rc;
+		return rc;
 	}
+
 	pr_debug("Power mode transition from %d to %d %s",
 		 display->panel->power_mode, power_mode,
 		 rc ? "failed" : "successful");
@@ -6192,13 +6197,10 @@ int dsi_display_dev_probe(struct platform_device *pdev)
 			disp_node = np;
 
 			if (IS_ENABLED(CONFIG_DSI_PARSER))
-				firm_req =
-				    !request_firmware_nowait(THIS_MODULE, 1,
-							     "dsi_prop",
-							     &pdev->dev,
-							     GFP_KERNEL,
-							     display,
-							     dsi_display_firmware_display);
+				firm_req = !request_firmware_nowait(
+					THIS_MODULE, 1, "dsi_prop",
+					&pdev->dev, GFP_KERNEL, display,
+					dsi_display_firmware_display);
 			break;
 		}
 
@@ -7315,6 +7317,9 @@ static inline bool dsi_display_mode_switch_dfps(struct dsi_display_mode *cur,
 		return false;
 }
 
+u32 mode_fps = 90;
+EXPORT_SYMBOL(mode_fps);
+
 /**
  * dsi_display_validate_mode_change() - Validate mode change case.
  * @display:     DSI display handle.
@@ -7326,8 +7331,6 @@ static inline bool dsi_display_mode_switch_dfps(struct dsi_display_mode *cur,
  *               is change in clk but vactive and hactive are same.
  * Return: error code.
  */
- u32 mode_fps = 90;
-EXPORT_SYMBOL(mode_fps);
 int dsi_display_validate_mode_change(struct dsi_display *display,
 			struct dsi_display_mode *cur_mode,
 			struct dsi_display_mode *adj_mode)
@@ -7335,7 +7338,6 @@ int dsi_display_validate_mode_change(struct dsi_display *display,
 	int rc = 0;
 	struct dsi_dfps_capabilities dfps_caps;
 	struct dsi_dyn_clk_caps *dyn_clk_caps;
-
 	struct msm_drm_notifier notifier_data;
 	int dynamic_fps;
 

@@ -20,14 +20,36 @@
 #include <linux/sort.h>
 #include <linux/debugfs.h>
 #include <linux/ktime.h>
+#include <linux/err.h>
+#include <linux/init.h>
+#include <linux/kobject.h>
+#include <linux/list.h>
+#include <linux/module.h>
+#include <linux/msm_drm_notify.h>
+#include <linux/notifier.h>
+#include <linux/of.h>
+#include <linux/string.h>
+#include <linux/sysfs.h>
 #include <uapi/drm/sde_drm.h>
 #include <drm/drm_mode.h>
 #include <drm/drm_crtc.h>
 #include <drm/drm_crtc_helper.h>
 #include <drm/drm_flip_work.h>
+#include <drm/drm_mipi_dsi.h>
+#include <drm/drm_sysfs.h>
+#include <drm/drmP.h>
 #include <linux/clk/qcom.h>
 #include <linux/sde_rsc.h>
 
+#include "dsi_display.h"
+#include "dsi_panel.h"
+#include "dsi_ctrl.h"
+#include "dsi_ctrl_hw.h"
+#include "dsi_drm.h"
+#include "dsi_clk.h"
+#include "dsi_pwr.h"
+#include "msm_drv.h"
+#include "msm_mmu.h"
 #include "sde_kms.h"
 #include "sde_hw_lm.h"
 #include "sde_hw_ctl.h"
@@ -36,46 +58,20 @@
 #include "sde_hw_util.h"
 #include "sde_hw_catalog.h"
 #include "sde_color_processing.h"
+#include "sde_dbg.h"
 #include "sde_encoder.h"
 #include "sde_connector.h"
 #include "sde_vbif.h"
 #include "sde_power_handle.h"
 #include "sde_core_perf.h"
 #include "sde_trace.h"
-#include <linux/msm_drm_notify.h>
-#include <linux/notifier.h>
 
-
-#include <linux/err.h>
-#include <linux/list.h>
-#include <linux/of.h>
-#include <linux/err.h>
-#include "msm_drv.h"
-#include "sde_connector.h"
-#include "msm_mmu.h"
-#include "dsi_display.h"
-#include "dsi_panel.h"
-#include "dsi_ctrl.h"
-#include "dsi_ctrl_hw.h"
-#include "dsi_drm.h"
-#include "dsi_clk.h"
-#include "dsi_pwr.h"
-#include "sde_dbg.h"
-#include <linux/kobject.h>
-#include <linux/string.h>
-#include <linux/sysfs.h>
-#include <linux/module.h>
-#include <linux/init.h>
-#include <drm/drm_mipi_dsi.h>
 extern int msm_drm_notifier_call_chain(unsigned long val, void *v);
+#define to_drm_connector(d) dev_get_drvdata(d)
+#define to_dsi_bridge(x)  container_of((x), struct dsi_bridge, base)
 
 #define SDE_PSTATES_MAX (SDE_STAGE_MAX * 4)
 #define SDE_MULTIRECT_PLANE_MAX (SDE_STAGE_MAX * 2)
-
-#include <drm/drm_sysfs.h>
-#include <drm/drmP.h>
-#define to_drm_connector(d) dev_get_drvdata(d)
-#define to_dsi_bridge(x)  container_of((x), struct dsi_bridge, base)
 
 struct sde_crtc_custom_events {
 	u32 event;
@@ -5736,12 +5732,13 @@ extern int aod_layer_hide;
 extern int op_dimlayer_bl_enable;
 extern int op_dp_enable;
 extern int sde_plane_check_fingerprint_layer(const struct drm_plane_state *drm_state);
+
 static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 		struct plane_state *pstates, int cnt)
 {
 	int fp_index = -1;
 	int fppressed_index = -1;
-    int aod_index = -1;
+	int aod_index = -1;
 	int fppressed_index_rt = -1;
 	int zpos = INT_MAX;
 	int mode;
@@ -5757,7 +5754,7 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 		display->panel == NULL) {
 		SDE_ERROR("display  panel is null\n");
 		return 0;
-    }
+	}
 
 	if (display->panel->aod_status == 1) {
 		if (oneplus_dim_status == 2 && oneplus_onscreenfp_status == 1) {
@@ -5785,7 +5782,8 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 		dim_mode = 0;
 	}
 
-    aod_mode = oneplus_aod_hid;
+	aod_mode = oneplus_aod_hid;
+
 	if (oneplus_dim_status == 5 && display->panel->aod_status == 0)
 		dim_mode = 0;
 
@@ -5797,9 +5795,10 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 			fppressed_index = i;
 			fppressed_index_rt = i;
 		}
-        if (mode ==3)
-            aod_index = i;
+	if (mode ==3)
+		aod_index = i;
 	}
+
 	if(fp_index >=0 && dim_mode!=0)
 		display->panel->dim_status = true;
 	else
@@ -5813,7 +5812,7 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 	if (fppressed_index_rt < 0) {
 		oneplus_aod_fod = 0;
 		oneplus_aod_dc = 0;
-    }
+	}
 
 	if (finger_type) {
 		if (aod_index >= 0 &&
@@ -5823,14 +5822,11 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 			aod_index = -1;
 			SDE_ATRACE_END("aod_layer_qbt_hid");
 		}
-        return 0;
+		return 0;
 	}
 
-	if (
-		(fp_index >= 0 && dim_mode != 0) ||
-		(display->panel->aod_status == 1
-		 && oneplus_aod_dc == 0)
-		) {
+	if ((fp_index >= 0 && dim_mode != 0) ||
+		(display->panel->aod_status == 1 && oneplus_aod_dc == 0)) {
 		op_dimlayer_bl = 0;
 	} else {
 		if (op_dimlayer_bl_enable && !op_dp_enable) {
@@ -5853,8 +5849,8 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 				SDE_ERROR("show dl one more frame %d\n", dsi_panel_hw_type);
 			}
 		}
-    }
-	SDE_DEBUG("fp_index=%d,fppressed_index=%d,aod_index=%d\n", fp_index, fppressed_index, aod_index);
+	}
+
 	if (fp_index >= 0 || fppressed_index >= 0 || oneplus_force_screenfp || dim_backlight == 1) {
 		if (fp_index >= 0 && fppressed_index >= 0) {
 			if (pstates[fp_index].stage >= pstates[fppressed_index].stage) {
@@ -5894,11 +5890,11 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 
 		if (fp_index >= 0) {
 			if (dim_mode == 0) {
-				//pstates[fp_index].sde_pstate->property_values[PLANE_PROP_ALPHA].value = 0xff;
 				fp_index = -1;
 			}
 		}
-        	if (fppressed_index >= 0) {
+
+		if (fppressed_index >= 0) {
 			if (fp_mode == 0) {
 				pstates[fppressed_index].sde_pstate->property_values[PLANE_PROP_ALPHA].value = 0;
 				if(oneplus_aod_fod == 1 && aod_index < 0) {
@@ -5916,6 +5912,7 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 				pstates[fppressed_index].sde_pstate->property_values[PLANE_PROP_ALPHA].value = 0xff;
 			}
 		}
+
 		if (aod_index >= 0) {
 			if (aod_mode ==1) {
 				SDE_DEBUG("aod layer hid");
@@ -5925,6 +5922,7 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 				SDE_ATRACE_END("aod_layer_hid");
 			}
 		}
+
 		if (fp_index >= 0)
 			cstate->fingerprint_mode = true;
 		else
@@ -5934,6 +5932,7 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 			SDE_ERROR("Failed to config dim layer\n");
 			return -EINVAL;
 		}
+
 		if (fppressed_index >= 0)
 			cstate->fingerprint_pressed = true;
 		else {
@@ -5947,7 +5946,8 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 				SDE_DEBUG("pstates PLANE_PROP_ALPHA value is 0\n");
 			}
 		}
-    }
+	}
+
 	if (fp_index < 0 && !dim_backlight) {
 		cstate->fingerprint_dim_layer = NULL;
 	}
@@ -6166,9 +6166,11 @@ static int sde_crtc_atomic_check(struct drm_crtc *crtc,
 			sde_plane_clear_multirect(pipe_staged[i]);
 		}
 	}
+
 	rc = sde_crtc_onscreenfinger_atomic_check(cstate, pstates, cnt);
 	if (rc)
 		goto end;
+
 	/* assign mixer stages based on sorted zpos property */
 	if (cnt > 0)
 		sort(pstates, cnt, sizeof(pstates[0]), pstate_cmp, NULL);

@@ -24,6 +24,7 @@
 #include "sde_crtc.h"
 #include "sde_rm.h"
 #include "sde_trace.h"
+
 #define BL_NODE_NAME_SIZE 32
 
 /* Autorefresh will occur after FRAME_CNT frames. Large values are unlikely */
@@ -143,9 +144,7 @@ static int sde_backlight_setup(struct sde_connector *c_conn,
 	display = (struct dsi_display *) c_conn->display;
 	bl_config = &display->panel->bl_config;
 	props.max_brightness = bl_config->brightness_max_level;
-//	props.brightness = bl_config->brightness_default_level;
 	props.brightness = bl_config->bl_def_val;
-	SDE_ERROR("props.brightness = %d\n",props.brightness);
 	snprintf(bl_node_name, BL_NODE_NAME_SIZE, "panel%u-backlight",
 							display_count);
 	c_conn->bl_device = backlight_device_register(bl_node_name, dev->dev,
@@ -368,12 +367,14 @@ int sde_connector_get_info(struct drm_connector *connector,
 
 extern void dsi_display_change_err_flag_irq_status(struct dsi_display *display,
 					bool enable);
+
 void sde_connector_schedule_status_work(struct drm_connector *connector,
 		bool en)
 {
 	struct sde_connector *c_conn;
 	struct msm_display_info info;
 	struct dsi_display *dsi_display;
+
 	c_conn = to_sde_connector(connector);
 	if (!c_conn)
 		return;
@@ -1391,10 +1392,6 @@ static int sde_connector_atomic_set_property(struct drm_connector *connector,
 		c_conn->bl_scale = val;
 		c_conn->bl_scale_dirty = true;
 		break;
-	case CONNECTOR_PROP_AD_BL_SCALE:
-		// c_conn->bl_scale_ad = val;
-		// c_conn->bl_scale_dirty = true;
-		break;
 	case CONNECTOR_PROP_QSYNC_MODE:
 		msm_property_set_dirty(&c_conn->property_info,
 				&c_state->property_state, idx);
@@ -2103,6 +2100,7 @@ int sde_connector_esd_status(struct drm_connector *conn)
 
 struct delayed_work *sde_esk_check_delayed_work;
 EXPORT_SYMBOL(sde_esk_check_delayed_work);
+
 static void sde_connector_check_status_work(struct work_struct *work)
 {
 	struct sde_connector *conn;
@@ -2187,7 +2185,7 @@ static int sde_connector_populate_mode_info(struct drm_connector *conn,
 		int topology_idx = 0;
 
 		memset(&mode_info, 0, sizeof(mode_info));
-		SDE_EVT32(conn, ((unsigned long long)conn) >> 32, 0x9999);
+
 		rc = c_conn->ops.get_mode_info(&c_conn->base, mode, &mode_info,
 			sde_kms->catalog->max_mixer_width,
 			c_conn->display);

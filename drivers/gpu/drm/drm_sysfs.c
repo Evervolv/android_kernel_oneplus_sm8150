@@ -160,6 +160,7 @@ int drm_sysfs_init(void)
 		drm_class = NULL;
 		return err;
 	}
+
 	drm_class->devnode = drm_devnode;
 
 	prEntry_dc = proc_mkdir("dc_for_sensor", NULL);
@@ -201,7 +202,6 @@ int drm_sysfs_init(void)
 		input_free_device(dc_mode_input_dev);
 		return 0;
 	}
-
 	return 0;
 }
 

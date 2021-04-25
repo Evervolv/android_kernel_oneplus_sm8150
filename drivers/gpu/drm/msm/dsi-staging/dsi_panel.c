@@ -18,13 +18,6 @@
 #include <linux/gpio.h>
 #include <linux/of_gpio.h>
 #include <linux/pwm.h>
-#include <video/mipi_display.h>
-#include <linux/project_info.h>
-#include <linux/oneplus/boot_mode.h>
-
-#include "dsi_panel.h"
-#include "dsi_ctrl_hw.h"
-#include "dsi_parser.h"
 #include <linux/pm_wakeup.h>
 #include <linux/project_info.h>
 #include <linux/msm_drm_notify.h>
@@ -32,11 +25,19 @@
 #include <linux/string.h>
 #include <linux/input.h>
 #include <linux/proc_fs.h>
+#include <video/mipi_display.h>
+#include <linux/project_info.h>
+#include <linux/oneplus/boot_mode.h>
+
+#include "dsi_panel.h"
+#include "dsi_ctrl_hw.h"
+#include "dsi_parser.h"
 #include "dsi_drm.h"
 #include "dsi_display.h"
 #include "sde_crtc.h"
 #include "sde_rm.h"
 #include "sde_trace.h"
+
 /**
  * topology is currently defined by a set of following 3 values:
  * 1. num of layer mixers
@@ -389,7 +390,6 @@ static int dsi_panel_vreg_get(struct dsi_panel *panel)
 		panel->power_info.vregs[i].vreg = vreg;
 	}
 
-
 	return rc;
 error_put:
 	for (i = i - 1; i >= 0; i--) {
@@ -680,8 +680,8 @@ error_disable_gpio:
 
 	if (gpio_is_valid(panel->bl_config.en_gpio))
 		gpio_set_value(panel->bl_config.en_gpio, 0);
-//error_disable_pinctrl:
-		(void)dsi_panel_set_pinctrl_state(panel, false);
+
+	(void)dsi_panel_set_pinctrl_state(panel, false);
 
 error_disable_vddd:
 	if (gpio_is_valid(panel->vddd_gpio))
@@ -736,7 +736,6 @@ static int dsi_panel_power_off(struct dsi_panel *panel)
 
 	return rc;
 }
-
 int dsi_panel_tx_cmd_set(struct dsi_panel *panel,
 				enum dsi_cmd_set_type type)
 {
@@ -4598,10 +4597,6 @@ int dsi_panel_pre_prepare(struct dsi_panel *panel)
 
 	mutex_lock(&panel->panel_lock);
 
-	/* If LP11_INIT is set, panel will be powered up during prepare() */
-	//	if (panel->lp11_init)
-	//		goto error;
-
 	if (gpio_is_valid(panel->tp1v8_gpio)) {
 		rc = gpio_direction_output(panel->tp1v8_gpio, 1);
 		pr_err("enable tp1v8 gpio\n");
@@ -4756,7 +4751,6 @@ int dsi_panel_prepare(struct dsi_panel *panel)
 	}
 
 	mutex_lock(&panel->panel_lock);
-
 
 	if (panel->lp11_init) {
 		rc = dsi_panel_set_pinctrl_state(panel, true);
@@ -5090,22 +5084,20 @@ int dsi_panel_enable(struct dsi_panel *panel)
 		pr_err("Invalid params\n");
 		return -EINVAL;
 	}
-	pr_err("start\n");
 
 	mutex_lock(&panel->panel_lock);
+
 	if (panel->aod_mode == 2) {
-		pr_err("Send dsi_panel_set_aod_mode 2 cmds\n");
 		rc = dsi_panel_set_aod_mode(panel, 2);
 		panel->aod_status = 1;
 	}
 
 	if ((EVT2_113MHZ_OSC == panel->panel_stage_info) || (PVT_113MHZ_OSC == panel->panel_stage_info) || (PVT_113MHZ_OSC_XTALK == panel->panel_stage_info)) {
 		rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_113MHZ_OSC_ON);
-		pr_err("Send DSI_CMD_SET_113MHZ_OSC_ON cmds\n");
 	} else {
 		rc = dsi_panel_tx_cmd_set(panel, DSI_CMD_SET_ON);
-		pr_err("Send DSI_CMD_SET_ON cmds\n");
 	}
+
 	if (rc) {
 		pr_err("[%s] failed to send DSI_CMD_SET_ON cmds, rc=%d\n",
 		       panel->name, rc);
@@ -5115,7 +5107,6 @@ int dsi_panel_enable(struct dsi_panel *panel)
 	if (panel->hw_type == DSI_PANEL_SAMSUNG_S6E3HC2 && (gamma_read_flag == GAMMA_READ_SUCCESS)) {
 		if (mode_fps == 60) {
 			rc = dsi_panel_tx_gamma_cmd_set(panel, DSI_GAMMA_CMD_SET_SWITCH_60HZ);
-			pr_err("Send DSI_GAMMA_CMD_SET_SWITCH_60HZ cmds\n");
 			if (rc)
 				pr_err("[%s] Failed to send DSI_GAMMA_CMD_SET_SWITCH_60HZ cmds, rc=%d\n",
 					panel->name, rc);
@@ -5123,7 +5114,6 @@ int dsi_panel_enable(struct dsi_panel *panel)
 	}
 
 	panel->panel_initialized = true;
-	pr_err("dsi_panel_enable aod_mode =%d\n",panel->aod_mode);
 
 	blank = MSM_DRM_BLANK_UNBLANK_CHARGE;
 	notifier_data.data = &blank;
@@ -5135,10 +5125,8 @@ int dsi_panel_enable(struct dsi_panel *panel)
 		aod_complete = false;
 	}
 	mutex_unlock(&panel->panel_lock);
-	pr_err("end\n");
 	/* remove print actvie ws */
 	pm_print_active_wakeup_sources_queue(false);
-
 	return rc;
 }
 
@@ -5404,7 +5392,7 @@ int dsi_panel_set_hbm_mode(struct dsi_panel *panel, int level)
 		pr_err("HBM == 5 for fingerprint\n");
 	}
 
- error:
+error:
 	mutex_unlock(&panel->panel_lock);
 	return rc;
 }
@@ -5453,7 +5441,7 @@ int dsi_panel_set_hbm_brightness(struct dsi_panel *panel, int level)
 	rc = mipi_dsi_dcs_set_display_brightness_samsung(dsi, level);
 	pr_err("hbm backlight = %d\n", level);
 
- error:
+error:
 	mutex_unlock(&panel->panel_lock);
 	return rc;
 }
@@ -5490,7 +5478,7 @@ int dsi_panel_set_acl_mode(struct dsi_panel *panel, int level)
 
 	pr_err("Set ACL Mode = %d\n", level);
 
- error:
+error:
 	mutex_unlock(&panel->panel_lock);
 
 	return rc;
@@ -5897,7 +5885,7 @@ int dsi_panel_send_dsi_panel_command(struct dsi_panel *panel)
 		pr_err("Failed to send dsi panel command\n");
 	pr_err("Send DSI_CMD_SET_PANEL_COMMAND cmds.\n");
 
- error:
+error:
 	mutex_unlock(&panel->panel_lock);
 	return rc;
 }
@@ -5924,7 +5912,7 @@ int dsi_panel_send_dsi_seed_command(struct dsi_panel *panel)
 	if (rc)
 		pr_err("Failed to send dsi seed command\n");
 
- error:
+error:
 	return rc;
 }
 
@@ -5977,7 +5965,7 @@ static int dsi_panel_parse_gamma_cmd_sets_sub(struct dsi_panel_cmd_set *cmd,
 	kfree(cmd->cmds);
 	cmd->cmds = NULL;
 
- error:
+error:
 	return rc;
 
 }
