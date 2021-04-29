@@ -829,7 +829,7 @@ config HAVE_LOW_MEMORY_KILLER
 config PROCESS_RECLAIM
 	bool "Enable process reclaim"
 	depends on PROC_FS
-	default n
+	default y
 	help
 	 It allows to reclaim pages of the process by /proc/pid/reclaim.
 
@@ -851,6 +851,7 @@ config FORCE_ALLOC_FROM_DMA_ZONE
 	  always using ZONE_DMA memory.
 
 	  If unsure, say "n".
+
 config DIRECT_SWAPPINESS
 	bool "direct swappiness"
 	default n
