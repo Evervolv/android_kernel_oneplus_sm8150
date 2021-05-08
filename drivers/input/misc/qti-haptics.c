@@ -561,20 +561,15 @@ static int qti_haptics_config_play_rate_us(struct qti_hap_chip *chip,
 	tmp = play_rate_us / HAP_PLAY_RATE_US_LSB;
 	val[0] = tmp & 0xff;
 	val[1] = (tmp >> 8) & 0xf;
-	if (true){/*op for use check rf*/
-		rc = qti_haptics_read(chip, REG_HAP_LRA_AUTO_RES, val, 2);
-		if (rc < 0)
-			dev_err(chip->dev, "read lra_auto_res failed, rc=%d\n", rc);
-		dev_info(chip->dev, "haptic val[0]=0x%x,val[1]=0x%x",val[0],val[1]);
-		val[1] = ((val[1] & 0xF0) >> 4);
+	rc = qti_haptics_read(chip, REG_HAP_LRA_AUTO_RES, val, 2);
+	if (rc < 0)
+		dev_err(chip->dev, "read lra_auto_res failed, rc=%d\n", rc);
+	dev_info(chip->dev, "haptic val[0]=0x%x,val[1]=0x%x",val[0],val[1]);
+	val[1] = ((val[1] & 0xF0) >> 4);
 	rc = qti_haptics_write(chip, addr, val, 2);
 	if (rc < 0)
 		dev_err(chip->dev, "write play_rate failed, rc=%d\n", rc);
-	} else {
-		rc = qti_haptics_write(chip, addr, val, 2);
-		if (rc < 0)
-			dev_err(chip->dev, "write play_rate failed, rc=%d\n", rc);
-	}
+
 	return rc;
 }
 
@@ -655,11 +650,11 @@ static int qti_haptics_clear_settings(struct qti_hap_chip *chip)
 			HAP_WAVEFORM_BUFFER_MAX);
 	if (rc < 0)
 		return rc;
-/*GCEB-243 abnormal vibration begin*/
+
 	rc = qti_haptics_config_vmax(chip, HAP_VMAX_MV_WAEK);
 	if (rc < 0)
 		return rc;
-/*GCEB-243 abnormal vibration end*/
+
 	rc = qti_haptics_play(chip, true);
 	if (rc < 0)
 		return rc;
@@ -912,7 +907,7 @@ static int qti_haptics_upload_effect(struct input_dev *dev,
 		level = effect->u.constant.level;
 		tmp = level * config->vmax_mv;
 		play->vmax_mv = tmp / 0x7fff;
-		dev_info(chip->dev, "upload constant effect, length = %dus, vmax_mv=%d\n",
+		dev_dbg(chip->dev, "upload constant effect, length = %dus, vmax_mv=%d\n",
 				play->length_us, play->vmax_mv);
 
 		rc = qti_haptics_load_constant_waveform(chip);
@@ -951,7 +946,7 @@ static int qti_haptics_upload_effect(struct input_dev *dev,
 		tmp = level * chip->predefined[i].vmax_mv;
 		play->vmax_mv = tmp / 0x7fff;
 
-		dev_info(chip->dev, "upload effect %d, vmax_mv=%d\n",
+		dev_dbg(chip->dev, "upload effect %d, vmax_mv=%d\n",
 				chip->predefined[i].id, play->vmax_mv);
 		rc = qti_haptics_load_predefined_effect(chip, i);
 		if (rc < 0) {
@@ -1003,7 +998,7 @@ static int qti_haptics_playback(struct input_dev *dev, int effect_id, int val)
 	unsigned long nsecs;
 	int rc = 0;
 
-	dev_info(chip->dev, "playback, val = %d\n", val);
+	dev_dbg(chip->dev, "playback, val = %d\n", val);
 	if (!!val) {
 		rc = qti_haptics_module_en(chip, true);
 		if (rc < 0)
@@ -2053,7 +2048,9 @@ static int qti_haptics_probe(struct platform_device *pdev)
 		dev_err(chip->dev, "Failed to get regmap handle\n");
 		return -ENXIO;
 	}
+
 	g_qti_chip = chip;
+
 	rc = qti_haptics_parse_dt(chip);
 	if (rc < 0) {
 		dev_err(chip->dev, "parse device-tree failed, rc=%d\n", rc);

@@ -41,7 +41,6 @@
 #include <asm/current.h>
 #include <linux/timer.h>
 
-
 #include "peripheral-loader.h"
 #include <linux/proc_fs.h>
 #include <linux/oem/param_rw.h>
@@ -1481,12 +1480,12 @@ static void device_restart_work_hdlr(struct work_struct *work)
 	 * sync() and fclose() on attempting the dump.
 	 */
 	msleep(100);
-	if (true == modem_5G_panic) {
+	if (modem_5G_panic == true) {
 		panic("5G DUMP : The expected panic to get 5G dump. ");
-	} else {
-		panic("subsys-restart: Resetting the SoC - %s crashed.",
-							dev->desc->name);
+		return;
 	}
+	panic("subsys-restart: Resetting the SoC - %s crashed.",
+							dev->desc->name);
 }
 
 #define KMSG_BUFSIZE 512
@@ -1629,20 +1628,16 @@ int subsystem_restart_dev(struct subsys_device *dev)
 		__subsystem_restart_dev(dev);
 		break;
 	case RESET_SOC:
-		pr_err("[OEM_MDM] RESET_SOC [%s]\n", name);
 		if (get_ssr_reason_state() && is_oem_esoc_ssr() == 0 &&
 				!(strcmp(name, "esoc0")) && oem_get_download_mode()) {
-			pr_err("[OEM_MDM] SDX5x %s force SSR to get dump\n",
-					name);
 			oem_set_esoc_ssr(1);
 			__subsystem_restart_dev(dev);
+			return 0;
 		} else if (is_oem_esoc_ssr() == 1) {
-			pr_err(
-			"[OEM_MDM] Skip SS crash because SDX5x has collapsed\n");
-		} else {
-			__pm_stay_awake(&dev->ssr_wlock);
-			schedule_work(&dev->device_restart_work);
+			return 0;
 		}
+		__pm_stay_awake(&dev->ssr_wlock);
+		schedule_work(&dev->device_restart_work);
 		return 0;
 	default:
 		panic("subsys-restart: Unknown restart level!\n");

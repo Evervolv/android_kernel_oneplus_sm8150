@@ -46,12 +46,12 @@ static const char * const power_supply_type_text[] = {
 	"USB_PD", "USB_PD_DRP", "BrickID",
 	"USB_HVDCP", "USB_HVDCP_3", "USB_HVDCP_3P5", "Wireless", "USB_FLOAT",
 	"BMS", "Parallel", "Main", "Wipower", "USB_C_UFP", "USB_C_DFP",
-	"Charge_Pump",
-	"DASH"
+	"Charge_Pump", "DASH"
 };
-	static const char *const cc_orientation_text[] = {
-		"Unknown", "cc1", "cc2"
-	};
+
+static const char *const cc_orientation_text[] = {
+	"Unknown", "cc1", "cc2"
+};
 
 static const char * const power_supply_status_text[] = {
 	"Unknown", "Charging", "Discharging", "Not charging", "Full"
@@ -151,9 +151,8 @@ static ssize_t power_supply_show_property(struct device *dev,
 		return scnprintf(buf, PAGE_SIZE, "%s\n",
 			       power_supply_usbc_pr_text[value.intval]);
 	else if (off == POWER_SUPPLY_PROP_OEM_TYPEC_CC_ORIENTATION)
-		return snprintf(
-		buf, 255, "%s\n",
-		cc_orientation_text[value.intval]);
+		return scnprintf(buf, PAGE_SIZE, "%s\n",
+			       cc_orientation_text[value.intval]);
 	else if (off == POWER_SUPPLY_PROP_TYPEC_SRC_RP)
 		return scnprintf(buf, PAGE_SIZE, "%s\n",
 			       power_supply_typec_src_rp_text[value.intval]);

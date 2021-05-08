@@ -129,6 +129,7 @@ int scm_set_dload_mode(int arg1, int arg2)
 		.args[1] = arg2,
 		.arginfo = SCM_ARGS(2),
 	};
+
 	if (!scm_dload_supported) {
 		if (tcsr_boot_misc_detect)
 			return scm_io_write(tcsr_boot_misc_detect, arg1);
@@ -146,27 +147,20 @@ int scm_set_dload_mode(int arg1, int arg2)
 static void set_dload_mode(int on)
 {
 	int ret;
-	u64 read_ret;
-	pr_info("set_dload_mode %s\n", on ? "ON" : "OFF");
 
-	pr_err("[MDM] on [%d] dload_mode_addr [%p]\n", on, dload_mode_addr);
 	if (dload_mode_addr) {
-		pr_err("[MDM] modem_5G_panic is [%d]\n", modem_5G_panic);
 		if (modem_5G_panic == true) {
 			__raw_writel(on ? 0xABCDABCD : 0, dload_mode_addr);
-			pr_err("[MDM] modem_5G_panic enter\n");
 		} else {
 			__raw_writel(on ? 0x0 : 0, dload_mode_addr);
 		}
 		/* Make sure the download cookie is updated */
 		mb();
-		read_ret = __raw_readl(dload_mode_addr);
-		pr_err("[MDM] read_ret is [0x%X]\n", read_ret);
 	}
 
 	ret = scm_set_dload_mode(on ? dload_type : 0, 0);
 	if (ret)
-		pr_err("[MDM] Failed to set secure DLOAD mode: %d\n", ret);
+		pr_err("Failed to set secure DLOAD mode: %d\n", ret);
 
 	dload_mode_enabled = on;
 }

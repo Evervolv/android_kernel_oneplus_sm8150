@@ -31,20 +31,12 @@
 #include "wcd-mbhc-v2.h"
 #include "pdata.h"
 
-#include <asoc/wcd934x_registers.h>
-
-#if 1
 #define WCD_MBHC_ADC_HS_THRESHOLD_MV    2550
-#else
-#define WCD_MBHC_ADC_HS_THRESHOLD_MV    1700
-#endif
 #define WCD_MBHC_ADC_HPH_THRESHOLD_MV   75
-#if 1
 #define WCD_MBHC_ADC_MICBIAS_MV         2700
-#else
-#define WCD_MBHC_ADC_MICBIAS_MV         1800
-#endif
 #define WCD_MBHC_FAKE_INS_RETRY         4
+
+static int skip_adc_hs_rem = 1;
 
 static int wcd_mbhc_get_micbias(struct wcd_mbhc *mbhc)
 {
@@ -974,28 +966,16 @@ exit:
 static irqreturn_t wcd_mbhc_adc_hs_rem_irq(int irq, void *data)
 {
 	struct wcd_mbhc *mbhc = data;
-
-	struct snd_soc_codec *codec = mbhc->codec;
-	struct snd_soc_component component = codec->component;
-    //add end
 	unsigned long timeout;
 	int adc_threshold, output_mv, retry = 0;
 	bool hphpa_on = false;
 	u8  moisture_status = 0;
 
-	pr_info("%s: enter\n", __func__);
+	pr_debug("%s: enter\n", __func__);
 	WCD_MBHC_RSC_LOCK(mbhc);
 
-	if (snd_soc_component_update_bits(&component, WCD934X_INTR_BYPASS1, 0x12, 0x0) < 0)
-		pr_info("%s: reg update fail!\n", __func__);
-	else
-		pr_info("%s: reg update success!\n", __func__);
-	if (snd_soc_component_update_bits(&component, WCD934X_INTR_BYPASS1, 0x12, 0x12) < 0)
-		pr_info("%s: reg update fail!\n", __func__);
-	else
-		pr_info("%s: reg update success!\n", __func__);
-
-	goto exit;
+	if (skip_adc_hs_rem)
+		goto exit;
 
 	timeout = jiffies +
 		  msecs_to_jiffies(WCD_FAKE_REMOVAL_MIN_PERIOD_MS);
@@ -1081,31 +1061,22 @@ static irqreturn_t wcd_mbhc_adc_hs_rem_irq(int irq, void *data)
 	}
 exit:
 	WCD_MBHC_RSC_UNLOCK(mbhc);
-	pr_info("%s: leave\n", __func__);
+	pr_debug("%s: leave\n", __func__);
 	return IRQ_HANDLED;
 }
 
 static irqreturn_t wcd_mbhc_adc_hs_ins_irq(int irq, void *data)
 {
 	struct wcd_mbhc *mbhc = data;
-
-	struct snd_soc_codec *codec = mbhc->codec;
-	struct snd_soc_component component = codec->component;
-
 	u8 clamp_state = 0;
 	u8 clamp_retry = WCD_MBHC_FAKE_INS_RETRY;
 
-	pr_info("%s: enter\n", __func__);
-	if (snd_soc_component_update_bits(&component, WCD934X_INTR_BYPASS1, 0x12, 0x0) < 0)
-		pr_info("%s: reg update fail!\n", __func__);
-	else
-		pr_info("%s: reg update success!\n", __func__);
+	pr_debug("%s: enter\n", __func__);
 
-	if (snd_soc_component_update_bits(&component, WCD934X_INTR_BYPASS1, 0x12, 0x12) < 0)
-		pr_info("%s: reg update fail!\n", __func__);
-	else
-		pr_info("%s: reg update success!\n", __func__);
-	goto done;
+	if (skip_adc_hs_rem) {
+		pr_debug("%s: leave\n", __func__);
+		return IRQ_HANDLED;
+	}
 
 	/*
 	 * ADC COMPLETE and ELEC_REM interrupts are both enabled for HEADPHONE,
@@ -1132,13 +1103,6 @@ static irqreturn_t wcd_mbhc_adc_hs_ins_irq(int irq, void *data)
 	} while (--clamp_retry);
 
 	WCD_MBHC_RSC_LOCK(mbhc);
-
-	if (mbhc->use_usbc_detect && wcd_swch_level_remove(mbhc)) {
-		pr_warn("%s: Switch level is low ", __func__);
-		WCD_MBHC_RSC_UNLOCK(mbhc);
-		return IRQ_HANDLED;
-	}
-
 	/*
 	 * If current plug is headphone then there is no chance to
 	 * get ADC complete interrupt, so connected cable should be
@@ -1168,8 +1132,7 @@ static irqreturn_t wcd_mbhc_adc_hs_ins_irq(int irq, void *data)
 	mbhc->btn_press_intr = false;
 	wcd_mbhc_adc_detect_plug_type(mbhc);
 	WCD_MBHC_RSC_UNLOCK(mbhc);
-done:
-	pr_info("%s: leave\n", __func__);
+	pr_debug("%s: leave\n", __func__);
 	return IRQ_HANDLED;
 }
 

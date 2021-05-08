@@ -1208,6 +1208,17 @@ out:
 	vote(chip->pl_awake_votable, FCC_STEPPER_VOTER, false, 0);
 }
 
+static bool is_batt_available(struct pl_data *chip)
+{
+	if (!chip->batt_psy)
+		chip->batt_psy = power_supply_get_by_name("battery");
+
+	if (!chip->batt_psy)
+		return false;
+
+	return true;
+}
+
 #define PARALLEL_FLOAT_VOLTAGE_DELTA_UV 50000
 static int pl_fv_vote_callback(struct votable *votable, void *data,
 			int fv_uv, const char *client)
@@ -1228,6 +1239,7 @@ static int pl_fv_vote_callback(struct votable *votable, void *data,
 		pr_info("fv_uv=%d\n", fv_uv);
 		fv_uv_pre = fv_uv;
 	}
+
 	rc = power_supply_set_property(chip->main_psy,
 			POWER_SUPPLY_PROP_VOLTAGE_MAX, &pval);
 	if (rc < 0) {
@@ -1343,17 +1355,6 @@ static void pl_awake_work(struct work_struct *work)
 			struct pl_data, pl_awake_work.work);
 
 	vote(chip->pl_awake_votable, PL_VOTER, false, 0);
-}
-
-static bool is_batt_available(struct pl_data *chip)
-{
-	if (!chip->batt_psy)
-		chip->batt_psy = power_supply_get_by_name("battery");
-
-	if (!chip->batt_psy)
-		return false;
-
-	return true;
 }
 
 static int pl_disable_vote_callback(struct votable *votable,

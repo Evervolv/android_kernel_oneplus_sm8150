@@ -811,9 +811,6 @@ static ssize_t tzdbgfs_read(struct file *file, char __user *buf,
 	int len = 0;
 	int *tz_id = PDE_DATA(file_inode(file));
 
-	pr_info("%s: private_data file name %s\n", __func__, file->f_path.dentry->d_name.name);
-	pr_info("%s: data address: %p, data: %d\n", __func__, tz_id, *tz_id);
-
 	if (*tz_id == TZDBG_BOOT || *tz_id == TZDBG_RESET ||
 		*tz_id == TZDBG_INTERRUPT || *tz_id == TZDBG_GENERAL ||
 		*tz_id == TZDBG_VMID || *tz_id == TZDBG_LOG)
@@ -942,8 +939,6 @@ err:
 	dma_free_coherent(&pdev->dev, len, (void *)g_qsee_log, coh_pmem);
 	return;
 }
-
-
 
 static int  tzdbgfs_init(struct platform_device *pdev)
 {
@@ -1144,13 +1139,8 @@ static int tz_log_probe(struct platform_device *pdev)
 
 	tzdbg.diag_buf = (struct tzdbg_t *)ptr;
 
-	pr_info("%s: Start init tz procfs\n", __func__);
 	if (tzdbgfs_init(pdev))
 		goto err;
-
-	pr_info("%s: End init tz procfs\n", __func__);
-
-
 
 	tzdbg_register_qsee_log_buf(pdev);
 
