@@ -88,6 +88,7 @@ obj-y += soc/
 obj-y += dsp/
 obj-y += ipc/
 obj-y += asoc/
+obj-y += extend/
 else
 obj-y += 4.0/
 endif
