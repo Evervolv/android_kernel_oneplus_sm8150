@@ -3144,65 +3144,27 @@ static int do_wp_page(struct vm_fault *vmf)
 	 * Take out anonymous pages first, anonymous shared vmas are
 	 * not dirty accountable.
 	 */
-	if (PageAnon(vmf->page) && !PageKsm(vmf->page)) {
-		int total_map_swapcount;
-		/*
-		 * Optimize away the trylock_page for mapcount > 1.
-		 *
-		 * We need to provide full accuracy and avoid spurious
-		 * COWs to avoid breaking the long term GUP pins if
-		 * the anon page is exclusive as in mapcount == 1. If
-		 * we find the mapcount at any time elevated above 1
-		 * for a non THP page, it means any GUP pin already
-		 * might have lost coherency.
-		 *
-		 * It is possible that if mapcount is found > 1 while
-		 * munmap or exit or MADV_DONTNEED in the parent is
-		 * running concurrently to the COW fault and that the
-		 * mapcount is concurrently on its way to return equal
-		 * 1, but no guarantee was provided anyway in such
-		 * case. The coherency between the GUP pin and the CPU
-		 * could have been lost if only the timing was any
-		 * different. So all it matters to avoid breaking long
-		 * term GUP pins, is that there are no false positive
-		 * COWs when mapcount is found equal 1.
-		 */
-		if (page_mapcount(vmf->page) > 1)
+	if (PageAnon(vmf->page)) {
+		struct page *page = vmf->page;
+
+		/* PageKsm() doesn't necessarily raise the page refcount */
+		if (PageKsm(page) || page_count(page) != 1)
 			goto copy;
-		if (!trylock_page(vmf->page)) {
-			get_page(vmf->page);
-			pte_unmap_unlock(vmf->pte, vmf->ptl);
-			lock_page(vmf->page);
-			if (!pte_map_lock(vmf)) {
-				unlock_page(vmf->page);
-				put_page(vmf->page);
-				return VM_FAULT_RETRY;
-			}
-			if (!pte_same(*vmf->pte, vmf->orig_pte)) {
-				unlock_page(vmf->page);
-				pte_unmap_unlock(vmf->pte, vmf->ptl);
-				put_page(vmf->page);
-				return 0;
-			}
-			put_page(vmf->page);
+		if (!trylock_page(page))
+			goto copy;
+		if (PageKsm(page) || page_mapcount(page) != 1 || page_count(page) != 1) {
+			unlock_page(page);
+			goto copy;
 		}
-		if (reuse_swap_page(vmf->page, &total_map_swapcount)) {
-			if (total_map_swapcount == 1) {
-				/*
-				 * The page is all ours. Move it to
-				 * our anon_vma so the rmap code will
-				 * not search our parent or siblings.
-				 * Protected against the rmap code by
-				 * the page lock.
-				 */
-				page_move_anon_rmap(vmf->page, vma);
-			}
-			unlock_page(vmf->page);
-			wp_page_reuse(vmf);
-			return VM_FAULT_WRITE;
-		}
-		unlock_page(vmf->page);
-	} else if (unlikely((vmf->vma_flags & (VM_WRITE|VM_SHARED)) ==
+		/*
+		 * Ok, we've got the only map reference, and the only
+		 * page count reference, and the page is locked,
+		 * it's dark out, and we're wearing sunglasses. Hit it.
+		 */
+		unlock_page(page);
+		wp_page_reuse(vmf);
+		return VM_FAULT_WRITE;
+	} else if (unlikely((vma->vm_flags & (VM_WRITE|VM_SHARED)) ==
 					(VM_WRITE|VM_SHARED))) {
 		return wp_page_shared(vmf);
 	}
@@ -3721,11 +3683,16 @@ static int __do_fault(struct vm_fault *vmf)
 		return ret;
 
 	if (unlikely(PageHWPoison(vmf->page))) {
-		if (ret & VM_FAULT_LOCKED)
+		int poisonret = VM_FAULT_HWPOISON;
+		if (ret & VM_FAULT_LOCKED) {
+			/* Retry if a clean page was removed from the cache. */
+			if (invalidate_inode_page(vmf->page))
+				poisonret = 0;
 			unlock_page(vmf->page);
+		}
 		put_page(vmf->page);
 		vmf->page = NULL;
-		return VM_FAULT_HWPOISON;
+		return poisonret;
 	}
 
 	if (unlikely(!(ret & VM_FAULT_LOCKED)))
