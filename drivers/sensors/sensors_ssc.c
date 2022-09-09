@@ -98,10 +98,14 @@ static void slpi_load_fw(struct work_struct *slpi_ldr_work)
 	}
 
 	ret = of_property_read_string(pdev->dev.of_node,
-		"qcom,firmware-name", &firmware_name);
+		"qcom,firmware-name-mutil", &firmware_name);
 	if (ret < 0) {
-		pr_err("can't get fw name.\n");
-		goto fail;
+		ret = of_property_read_string(pdev->dev.of_node,
+			"qcom,firmware-name", &firmware_name);
+		if (ret < 0) {
+			pr_err("can't get fw name.\n");
+			goto fail;
+		}
 	}
 
 	priv = platform_get_drvdata(pdev);

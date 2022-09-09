@@ -66,6 +66,12 @@ obj-$(CONFIG_UID_SYS_STATS)	+= uid_sys_stats.o
 obj-$(CONFIG_MEMORY_STATE_TIME)	+= memory_state_time.o
 obj-$(CONFIG_QPNP_MISC) 	+= qpnp-misc.o
 
+obj-$(CONFIG_AUDIO_SENSOR)	+= audio_sensor.o
+obj-$(CONFIG_INFRARED_PROXIMITY)	+= infrared_power_control.o
+obj-$(CONFIG_AW8697_HAPTIC)	+= aw8697_haptic/
+obj-y						+= tri_state_key/
+obj-y						+= oplus_motor/ motor.o
+
 obj-$(CONFIG_OKL4_USER_VIRQ)	+= okl4-virq.o
 obj-$(CONFIG_OKL4_RINGBUF)	+= okl4-ringbuf.o
 obj-$(CONFIG_TEST_IRQ_REQUESTER) += irq_requester.o
