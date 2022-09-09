@@ -1,4 +1,4 @@
-/* Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2018, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -134,14 +134,6 @@ static int cam_vfe_fe_get_reg_update(
 		return -EINVAL;
 	}
 
-	if (cdm_args->rup_data->is_fe_enable &&
-		(cdm_args->rup_data->res_bitmap &
-			(1 << CAM_IFE_REG_UPD_CMD_RDI1_BIT))) {
-		CAM_DBG(CAM_ISP, "Avoiding rup_upd for fe");
-		cdm_args->cmd.used_bytes = 0;
-		return 0;
-	}
-
 	size = cdm_util_ops->cdm_required_size_reg_random(1);
 	/* since cdm returns dwords, we need to convert it into bytes */
 	if ((size * 4) > cdm_args->cmd.size) {
@@ -153,8 +145,8 @@ static int cam_vfe_fe_get_reg_update(
 	rsrc_data = fe_res->res_priv;
 	reg_val_pair[0] = rsrc_data->fe_reg->reg_update_cmd;
 	reg_val_pair[1] = rsrc_data->reg_data->reg_update_cmd_data;
-	CAM_DBG(CAM_ISP, "CAMIF res_id %d reg_update_cmd 0x%x offset 0x%x",
-		fe_res->res_id, reg_val_pair[1], reg_val_pair[0]);
+	CAM_DBG(CAM_ISP, "CAMIF reg_update_cmd 0x%x offset 0x%x",
+		reg_val_pair[1], reg_val_pair[0]);
 
 	cdm_util_ops->cdm_write_regrandom(cdm_args->cmd.cmd_buf_addr,
 		1, reg_val_pair);
@@ -356,6 +348,7 @@ static int cam_vfe_fe_reg_dump(
 	struct cam_isp_resource_node *fe_res)
 {
 	struct cam_vfe_mux_fe_data *fe_priv;
+	struct cam_vfe_soc_private *soc_private;
 	int rc = 0, i;
 	uint32_t val = 0;
 
@@ -369,6 +362,7 @@ static int cam_vfe_fe_reg_dump(
 		return 0;
 
 	fe_priv = (struct cam_vfe_mux_fe_data *)fe_res->res_priv;
+	soc_private = fe_priv->soc_info->soc_private;
 	for (i = 0xA3C; i <= 0xA90; i += 4) {
 		val = cam_io_r_mb(fe_priv->mem_base + i);
 		CAM_INFO(CAM_ISP, "offset 0x%x val 0x%x", i, val);
@@ -393,6 +387,14 @@ static int cam_vfe_fe_reg_dump(
 		val = cam_io_r_mb(fe_priv->mem_base + i);
 		CAM_INFO(CAM_ISP, "offset 0x%x val 0x%x", i, val);
 	}
+
+	cam_cpas_reg_read((uint32_t)soc_private->cpas_handle,
+		CAM_CPAS_REG_CAMNOC, 0x420, true, &val);
+	CAM_INFO(CAM_ISP, "IFE02_MAXWR_LOW offset 0x420 val 0x%x", val);
+
+	cam_cpas_reg_read((uint32_t)soc_private->cpas_handle,
+		CAM_CPAS_REG_CAMNOC, 0x820, true, &val);
+	CAM_INFO(CAM_ISP, "IFE13_MAXWR_LOW offset 0x820 val 0x%x", val);
 
 	return rc;
 }

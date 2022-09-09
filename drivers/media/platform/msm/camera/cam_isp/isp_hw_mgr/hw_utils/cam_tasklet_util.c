@@ -1,4 +1,4 @@
-/* Copyright (c) 2017-2019, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2017-2018, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -299,9 +299,6 @@ int cam_tasklet_start(void  *tasklet_info)
 void cam_tasklet_stop(void  *tasklet_info)
 {
 	struct cam_tasklet_info  *tasklet = tasklet_info;
-
-	if (!atomic_read(&tasklet->tasklet_active))
-		return;
 
 	atomic_set(&tasklet->tasklet_active, 0);
 	tasklet_kill(&tasklet->tasklet);

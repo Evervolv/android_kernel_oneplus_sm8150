@@ -1,4 +1,4 @@
-/* Copyright (c) 2017-2020, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2017-2018, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -511,8 +511,8 @@ int cam_irq_controller_unsubscribe_irq(void *irq_controller,
 		}
 	}
 
+	priority = evt_handler->priority;
 	if (found) {
-		priority = evt_handler->priority;
 		for (i = 0; i < controller->num_registers; i++) {
 			irq_register = &controller->irq_register_arr[i];
 			irq_register->top_half_enable_mask[priority] &=
@@ -708,9 +708,9 @@ irqreturn_t cam_irq_controller_handle_irq(int irq_num, void *priv)
 			if (irq_register->top_half_enable_mask[j] &
 				controller->irq_status_arr[i])
 				need_th_processing[j] = true;
-			CAM_DBG(CAM_IRQ_CTRL,
-				"i %d j %d need_th_processing = %d",
-				i, j, need_th_processing[j]);
+				CAM_DBG(CAM_IRQ_CTRL,
+					"i %d j %d need_th_processing = %d",
+					i, j, need_th_processing[j]);
 		}
 	}
 
