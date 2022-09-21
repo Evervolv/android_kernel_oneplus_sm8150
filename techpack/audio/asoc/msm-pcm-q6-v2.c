@@ -1678,7 +1678,7 @@ static int msm_pcm_chmap_ctl_put(struct snd_kcontrol *kcontrol,
 	}
 
 	mutex_lock(&pdata->lock);
-	prtd = substream->runtime->private_data;
+        prtd = substream->runtime ? substream->runtime->private_data : NULL;
 	if (prtd) {
 		prtd->set_channel_map = true;
 			for (i = 0; i < PCM_FORMAT_MAX_NUM_CHANNEL_V8; i++)
@@ -1727,7 +1727,7 @@ static int msm_pcm_chmap_ctl_get(struct snd_kcontrol *kcontrol,
 		sizeof(ucontrol->value.integer.value));
 
 	mutex_lock(&pdata->lock);
-	prtd = substream->runtime->private_data;
+        prtd = substream->runtime ? substream->runtime->private_data : NULL;
 
 	if (prtd && prtd->set_channel_map == true) {
 		for (i = 0; i < PCM_FORMAT_MAX_NUM_CHANNEL_V8; i++)
