@@ -52,7 +52,7 @@ int __init  board_ftm_mode_init(void)
 #else
 	char *substr;
 
-	substr = strstr(boot_command_line, "oplus_ftm_mode=");
+	substr = strstr(saved_command_line, "oplus_ftm_mode=");
 	if (substr) {
 		substr += strlen("oplus_ftm_mode=");
 
@@ -120,7 +120,7 @@ static int __init start_reason_init(void)
 	}
 #else
     int i;
-	char * substr = strstr(boot_command_line, "androidboot.startupmode=");
+	char * substr = strstr(saved_command_line, "androidboot.startupmode=");
 	if (NULL == substr) {
 		return 0;
 	}
@@ -168,7 +168,7 @@ static int __init oplus_charger_reboot(void)
 		charger_reboot[strlen(charger_present)] = '\0';
 #else
     int i;
-	char * substr = strstr(boot_command_line, "oplus_charger_present=");
+	char * substr = strstr(saved_command_line, "oplus_charger_present=");
 	if (substr) {
 		substr += strlen("oplus_charger_present=");
 		for (i=0; substr[i] != ' '&& i < MAX_CMD_LENGTH && substr[i] != '\0'; i++) {
@@ -193,7 +193,7 @@ int __init  board_boot_mode_init(void)
     int i;
 	char *substr;
 
-	substr = strstr(boot_command_line, "androidboot.mode=");
+	substr = strstr(saved_command_line, "androidboot.mode=");
 	if (substr) {
 		substr += strlen("androidboot.mode=");
 		for (i=0; substr[i] != ' ' && i < MAX_CMD_LENGTH && substr[i] != '\0'; i++) {
