@@ -34,10 +34,6 @@
 #include <linux/regulator/of_regulator.h>
 #include <linux/qpnp/qpnp-pbs.h>
 #include <linux/qpnp/qpnp-misc.h>
-#ifdef OPLUS_FEATURE_THEIA
-#include <soc/oplus/system/oplus_bscheck.h>
-#include <soc/oplus/system/oplus_brightscreen_check.h>
-#endif
 
 #include <linux/io.h>
 
@@ -208,7 +204,6 @@ struct pon_regulator {
 	bool			enabled;
 };
 
-#ifndef OPLUS_FEATURE_QCOM_PMICWD
 struct qpnp_pon {
 	struct device		*dev;
 	struct regmap		*regmap;
@@ -252,17 +247,13 @@ struct qpnp_pon {
 	struct notifier_block	pon_nb;
 	bool			legacy_hard_reset_offset;
 };
-#endif //OPLUS_FEATURE_QCOM_PMICWD
 
 static int pon_ship_mode_en;
 module_param_named(
 	ship_mode_en, pon_ship_mode_en, int, 0600
 );
 
-#ifndef OPLUS_FEATURE_QCOM_PMICWD
 static struct qpnp_pon *sys_reset_dev;
-#endif //OPLUS_FEATURE_QCOM_PMICWD
-
 static DEFINE_SPINLOCK(spon_list_slock);
 static LIST_HEAD(spon_dev_list);
 
@@ -368,12 +359,8 @@ done:
 	return rc;
 }
 
-#ifdef OPLUS_FEATURE_QCOM_PMICWD
-int qpnp_pon_masked_write(struct qpnp_pon *pon, u16 addr, u8 mask, u8 val)
-#else
 static int
 qpnp_pon_masked_write(struct qpnp_pon *pon, u16 addr, u8 mask, u8 val)
-#endif /* OPLUS_FEATURE_QCOM_PMICWD */
 {
 	int rc;
 
@@ -1024,19 +1011,6 @@ static int qpnp_pon_input_dispatch(struct qpnp_pon *pon, u32 pon_type)
 		input_report_key(pon->pon_input, cfg->key_code, 1);
 		input_sync(pon->pon_input);
 	}
-
-	#ifdef OPLUS_FEATURE_QCOM_PMICWD
-	pr_err("keycode = %d,key_st = %d\n",cfg->key_code, key_status);
-	#endif //OPLUS_FEATURE_QCOM_PMICWD
-
-	#ifdef OPLUS_FEATURE_THEIA
-	pr_err("keycode = %d,key_st = %d  old_state= %d   %d \n",cfg->key_code, key_status,cfg->old_state ,KEY_POWER);
-	if(cfg->key_code == KEY_POWER && key_status != 0 && cfg->old_state == 0){
-		//we should canel per work
-		black_screen_timer_restart();
-		bright_screen_timer_restart();
-	}
-	#endif
 
 	input_report_key(pon->pon_input, cfg->key_code, key_status);
 	input_sync(pon->pon_input);
@@ -2558,13 +2532,8 @@ static int qpnp_pon_probe(struct platform_device *pdev)
 	if (sys_reset)
 		sys_reset_dev = pon;
 
-        qpnp_pon_debugfs_init(pon);
+	qpnp_pon_debugfs_init(pon);
 
-	#ifdef OPLUS_FEATURE_QCOM_PMICWD
-	pmicwd_init(pdev, pon, sys_reset);
-	kpdpwr_init(pon, sys_reset);
-    #endif /* OPLUS_FEATURE_QCOM_PMICWD */
-	
 	return 0;
 }
 
@@ -2645,9 +2614,6 @@ static const struct of_device_id qpnp_pon_match_table[] = {
 
 static struct platform_driver qpnp_pon_driver = {
 	.driver = {
-		#ifdef OPLUS_FEATURE_QCOM_PMICWD
-		.pm = &qpnp_pm_ops,
-		#endif //OPLUS_FEATURE_QCOM_PMICWD
 		.name = "qcom,qpnp-power-on",
 		.of_match_table = qpnp_pon_match_table,
 	},
