@@ -386,8 +386,8 @@ static void qusb_phy_get_tune1_param(struct qusb_phy *qphy)
 	bit_mask = (bit_mask << qphy->efuse_num_of_bits) - 1;
 
 	/*
-	 * if efuse reg is updated (i.e non-zero) then use it to program
-	 * tune parameters
+	 * For 8nm zero is treated as a valid efuse value and driver
+	 * should program the tune1 reg based on efuse value
 	 */
 	qphy->tune_val = readl_relaxed(qphy->efuse_reg);
 	pr_debug("%s(): bit_mask:%d efuse based tune1 value:%d\n",
