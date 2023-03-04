@@ -1817,7 +1817,7 @@ static uint32_t util_gen_new_ie(uint8_t *ie, uint32_t ielen,
 						pos += tmp_old[1] + 2;
  					}
  				}
- 			} else {
+			} else {
 				/* copy ie from subelement into new ie */
 				if ((pos + tmp[1] + 2) <= (new_ie + ielen)) {
 					qdf_mem_copy(pos, tmp, tmp[1] + 2);
