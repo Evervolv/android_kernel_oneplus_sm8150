@@ -1,0 +1,84 @@
+/*this is for different project dtsi*/
+#include "sm8150-guacamoleb-common.dtsi"
+#include "sm8150-camera-sensor-guacamoleb.dtsi"
+
+&soc {
+	dsi_samsung_s6e3fc2x01_cmd_display {
+		qcom,dsi-display-active;
+	};
+};
+
+&goodix_optical {
+	chip-name = "G_OPTICAL_18857_G2_4";  /* /proc/fp_id, will be displayed in engineer menu  */
+};
+
+&gsensor {
+	sensor-direction = <3>;
+};
+
+&msensor {
+	sensor-direction = <4>;
+};
+
+&mtp_batterydata {
+	#include "OP-fg-batterydata-3700mah.dtsi"
+};
+
+&s3706_ts {
+	project_id = <18857>;
+};
+
+&tp_rst_active {
+	mux {
+		pins = "gpio54";
+		function = "gpio";
+	};
+	config {
+		pins = "gpio54";
+		drive-strength = <8>;
+		bias-pull-up;
+	};
+};
+
+&aw8697_haptic {
+	status = "disabled";
+};
+
+&pm8150b_haptics {
+	wf_5 {
+		qcom,wf-brake-pattern = [03 03 03 03];
+	};
+};
+
+&infrared_pl {
+	interrupt-parent = <&tlmm>;
+	interrupts = <163 0x2>;
+	infrared,irq-gpio = <&tlmm 163 0x2008>;
+	pinctrl-names = "infrared_input";
+	pinctrl-0 = <&free_fall_input>;
+};
+
+&tlmm {
+	infrared_input: infrared_input {
+		mux {
+			pins = "gpio163";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio163";
+			drive-strength = <2>;
+			input-enable;
+			bias-disable; //No Pull
+		};
+	};
+};
+
+&oem_rf_cable {
+	rf,cable-gpio-1 = <&pm8150_gpios 4 0>;
+	pinctrl-0 = <&rf_cable_ant0_active &rf_pm8150_cable_ant1>;
+};
+
+&oem_aboard_check {
+	/delete-property/ oem,aboard-gpio-1;
+	pinctrl-0 = <&ab_id1_default>;
+};
