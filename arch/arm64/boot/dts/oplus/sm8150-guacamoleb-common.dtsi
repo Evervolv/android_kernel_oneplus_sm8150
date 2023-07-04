@@ -1,0 +1,183 @@
+/* This is for guacamoleb family */
+#include "sm8150-guacamole-common.dtsi"
+
+&thermal_zones {
+	skin-msm-therm {
+		trips {
+			/delete-node/ freq_config5;
+		};
+		cooling-maps {
+			freq_dev6 {
+				trip = <&freq_config3>;
+			};
+
+			freq_dev7 {
+				trip = <&freq_config4>;
+			};
+		};
+	};
+};
+
+&usb2_phy0 {
+	qcom,param-override-seq =
+		<0x67 0x6c/*Disconnection voltage +21.56%*/
+		 0x09 0x70/*Pre-emphasis:4x DC voltage level:+13.30%*/
+		 0x28 0x74>;
+};
+
+&sec_ts {
+	status = "disabled";
+};
+
+&tri_state_key {
+	status = "disabled";
+};
+
+&qupv3_se1_i2c {
+	magnachip@0C {
+		status = "disabled";
+	};
+
+	magnachip@0D {
+		status = "disabled";
+	};
+};
+
+&qupv3_se9_i2c {
+	qcom,clk-freq-out = <400000>;
+	status = "ok";
+	magnachip@0D {
+		compatible = "oplus,hall-mxm1120,up";
+		reg = <0x0D>;
+		dhall,id = <1>;
+		vdd-supply = <&pm8150l_l7>;
+		magnachip,init-interval = <200>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <26 0x02>;
+		dhall,irq-gpio = <&tlmm 26 0x2008>;
+		pinctrl-names = "uphall_tri_state_key_active";
+		pinctrl-0 = <&uphall_tri_state_key_active>;
+	};
+
+	magnachip@0C {
+		compatible = "oplus,hall-mxm1120,down";
+		reg = <0x0C>;
+		dhall,id = <2>;
+		vdd-supply = <&pm8150l_l7>;
+		magnachip,init-interval = <200>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <27 0x02>;
+		dhall,irq-gpio = <&tlmm 27 0x2008>;
+		pinctrl-names = "downhall_tri_state_key_active";
+		pinctrl-0 = <&downhall_tri_state_key_active>;
+	};
+};
+
+&tlmm {
+	uphall_tri_state_key_active: uphall_tri_state_key_active {
+		mux {
+			pins = "gpio26";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio26";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+	};
+
+	downhall_tri_state_key_active: downhall_tri_state_key_active {
+		mux {
+			pins = "gpio27";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio27";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+	};
+};
+
+/* OnePlus add haptic, by yangfb*/
+&aw8697_haptic {
+	qcom,device_id = <1040>;
+	op,count_go;
+};
+
+&motor_pl {
+	status = "disabled";
+};
+
+&step_motor {
+	status = "disabled";
+};
+
+&pm8150b_gpios {
+	haptics_boost {
+		haptics_boost_default: haptics_boost_default {
+			pins = "gpio5";
+			function = "normal";
+			output-enable;
+			input-disable;
+			bias-disable;
+			qcom,drive-strength = <3>; /* high */
+			power-source = <0>; /* VPH_PWR */
+		};
+	};
+};
+
+&vendor {
+	haptics_boost_vreg: haptics_boost_vreg {
+		compatible = "regulator-fixed";
+		regulator-name = "haptics_boost";
+		gpio = <&pm8150b_gpios 5 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+		regulator-enable-ramp-delay = <300>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&haptics_boost_default>;
+		status = "ok";
+	};
+};
+
+&pm8150b_haptics {
+	status = "ok";
+	vdd-supply = <&haptics_boost_vreg>;
+	wf_6 {
+		/* WEAK */
+		qcom,effect-id = <6>;
+		qcom,wf-vmax-mv = <2500>;
+		qcom,wf-pattern = [7e 7e 7e fe fe];
+		qcom,wf-play-rate-us = <6667>;
+		qcom,wf-brake-pattern = [00 00 00 00];
+		qcom,lra-auto-resonance-disable;
+	};
+	wf_7 {
+		/* MIDDLE */
+		qcom,effect-id = <7>;
+		qcom,wf-vmax-mv = <2500>;
+		qcom,wf-pattern = [7e 7e 7e 7e fe fe fe];
+		qcom,wf-play-rate-us = <6667>;
+		qcom,wf-brake-pattern = [00 00 00 00];
+		qcom,lra-auto-resonance-disable;
+	};
+	wf_8 {
+		/* STRONG */
+		qcom,effect-id = <8>;
+		qcom,wf-vmax-mv = <2500>;
+		qcom,wf-pattern = [7e 7e 7e 7e 7e fe fe fe];
+		qcom,wf-play-rate-us = <6667>;
+		qcom,wf-brake-pattern = [00 00 00 00];
+		qcom,lra-auto-resonance-disable;
+	};
+};
+
+&pm8150_gpios {
+	rf_pm8150_cable_ant1: rf_pm8150_cable_ant1 {
+		pins = "gpio4";
+		function = "normal";
+		power-source = <0>;
+		bias-pull-up;
+		input-enable;
+	};
+};
