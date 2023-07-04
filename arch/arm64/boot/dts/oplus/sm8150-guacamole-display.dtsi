@@ -1,0 +1,250 @@
+/* This is for guacamole family */
+#include "dsi-panel-samsung_oneplus_dsc.dtsi"
+#include "dsi-panel-samsung_s6e3fc2x01.dtsi"
+#include "dsi-panel-samsung_sofef03f_m_fhd_dsc_cmd.dtsi"
+#include "dsi-panel-samsung_sofef00_m_video.dtsi"
+#include <dt-bindings/clock/mdss-10nm-pll-clk.h>
+
+&soc {
+	dsi_samsung_oneplus_dsc_cmd_display: qcom,dsi-display@23 {
+		label = "dsi_samsung_oneplus_dsc_cmd_display";
+		qcom,display-type = "primary";
+		qcom,dsi-ctrl-num = <0>;
+		qcom,dsi-phy-num = <0>;
+		qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+		qcom,dsi-panel = <&dsi_samsung_oneplus_dsc_cmd>;
+	};
+
+	dsi_samsung_s6e3fc2x01_cmd_display: qcom,dsi-display@24 {
+		label = "dsi_samsung_s6e3fc2x01_cmd_display";
+		qcom,display-type = "primary";
+		qcom,dsi-ctrl-num = <0>;
+		qcom,dsi-phy-num = <0>;
+		qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+		qcom,dsi-panel = <&dsi_samsung_s6e3fc2x01_cmd>;
+	};
+
+	dsi_samsung_sofef03f_m_fhd_dsc_cmd_display: qcom,dsi-display@25 {
+		label = "dsi_samsung_sofef03f_m_fhd_dsc_cmd_display";
+		qcom,display-type = "primary";
+		qcom,dsi-ctrl-num = <0>;
+		qcom,dsi-phy-num = <0>;
+		qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+		qcom,dsi-panel = <&dsi_samsung_sofef03f_m_fhd_dsc_cmd>;
+	};
+
+	dsi_samsung_sofef00_m_video_display: qcom,dsi-display@27 {
+		label = "dsi_samsung_sofef00_m_video_display";
+		qcom,display-type = "primary";
+		qcom,dsi-ctrl-num = <0>;
+		qcom,dsi-phy-num = <0>;
+		qcom,dsi-select-clocks = "mux_byte_clk0", "mux_pixel_clk0";
+		qcom,dsi-panel = <&dsi_samsung_sofef00_m_video>;
+	};
+};
+
+&sde_dsi {
+	pinctrl-names = "panel_active", "panel_suspend","default";
+	pinctrl-0 = <&sde_dsi_active &sde_te_active &display_panel_avdd_eldo_default>;
+	pinctrl-1 = <&sde_dsi_suspend &sde_te_suspend &display_panel_avdd_eldo_off>;
+	/delete-property/ lab-supply;
+	/delete-property/ ibb-supply;
+	/delete-property/ vdd-supply;
+	qcom,dsi-display-list =
+		<&dsi_samsung_oneplus_dsc_cmd_display
+		 &dsi_samsung_s6e3fc2x01_cmd_display
+		 &dsi_samsung_sofef03f_m_fhd_dsc_cmd_display
+		 &dsi_samsung_sofef00_m_video_display>;
+};
+
+&sde_dp {
+	qcom,dp-aux-switch = <&fsa4480_0>;
+};
+
+&display_panel_avdd_eldo {
+	/delete-property/ gpio;
+};
+
+&tlmm {
+	display_panel_avdd_eldo_off: display_panel_avdd_eldo_off {
+		mux {
+			pins = "gpio130";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio130";
+			drive-strength = <8>;
+			bias-disable = <0>;
+			output-low;
+		};
+	};
+};
+
+&sde_dsi_active {
+    mux {
+        pins = "gpio78";
+        function = "gpio";
+    };
+
+    config {
+        pins = "gpio78";
+        drive-strength = <8>;
+        bias-disable = <0>;
+    };
+};
+
+&sde_dsi_suspend {
+    mux {
+        pins = "gpio78";
+        function = "gpio";
+    };
+
+    config {
+        pins = "gpio78";
+        drive-strength = <2>;
+        bias-pull-down;
+    };
+};
+
+&dsi_samsung_oneplus_dsc_cmd {
+	oplus,mdss-dsi-vendor-name = "S6E3HC2";
+	oplus,mdss-dsi-manufacture = "samsung";
+	oplus,dsi-fod-brightness = <0 0xff>,
+		<1 0xf1>, <2 0xf0>, <3 0xee>, <4 0xec>, <6 0xeb>,
+		<10 0xe7>, <20 0xdf>, <30 0xd8>, <45 0xd0>, <70 0xc5>,
+		<100 0xb9>, <150 0xaf>, <227 0x99>, <300 0x88>, <400 0x76>,
+		<500 0x66>, <600 0x59>, <800 0x42>, <1023 0x2a>;
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <1023>;
+	qcom,mdss-brightness-max-level = <1023>;
+	qcom,mdss-dsi-bl-normal-max-level = <1023>;
+	qcom,mdss-brightness-normal-max-level = <1023>;
+	qcom,mdss-brightness-default-level = <320>;
+	qcom,platform-te-gpio = <&tlmm 8 0>;
+	qcom,platform-reset-gpio = <&tlmm 6 0>;
+	qcom,platform-reset-gpio-tmo = <&tlmm 78 0>;
+	qcom,platform-poc-gpio = <&tlmm 130 0>;
+	qcom,tp1v8-gpio = <&tlmm 119 0>;
+	qcom,mdss-dsi-display-timings {
+		timing@0 { /* wqhd 60hz */
+			qcom,mdss-dsi-panel-phy-timings = [00 24 0A 0A 26 25 09
+				0A 06 02 04 00 1E 1A];
+			qcom,display-topology = <1 1 1>,<2 2 1>;
+			qcom,default-topology-index = <1>;
+			qcom,panel-roi-alignment=<720 65 720 65 720 65>;
+		};
+		timing@1 { /* fhd 90hz */
+			qcom,mdss-dsi-panel-phy-timings = [00 24 0A 0A 26 25 09
+				0A 06 02 04 00 1E 1A];
+			qcom,display-topology = <1 1 1>,<2 2 1>;
+			qcom,default-topology-index = <1>;
+			qcom,panel-roi-alignment=<540 60 540 60 540 60>;
+		};
+		timing@2 { /* fhd 60hz */
+			qcom,mdss-dsi-panel-phy-timings = [00 24 0A 0A 26 25 09
+				0A 06 02 04 00 1E 1A];
+			qcom,display-topology = <1 1 1>,<2 2 1>;
+			qcom,default-topology-index = <1>;
+			qcom,panel-roi-alignment=<540 60 540 60 540 60>;
+		};
+		timing@3 { /* wqhd 90hz */
+			qcom,mdss-dsi-panel-phy-timings = [00 24 0A 0A 26 25 09
+				0A 06 02 04 00 1E 1A];
+			qcom,display-topology = <1 1 1>,<2 2 1>;
+			qcom,default-topology-index = <1>;
+			qcom,panel-roi-alignment=<720 65 720 65 720 65>;
+		};
+		/delete-node/ timing@1;
+		/delete-node/ timing@2;
+	};
+};
+
+&dsi_samsung_s6e3fc2x01_cmd {
+	oplus,mdss-dsi-vendor-name = "S6E3FC2";
+	oplus,mdss-dsi-manufacture = "samsung";
+	oplus,dsi-fod-brightness = <0 0xff>,
+		<1 0xf1>, <2 0xf0>, <3 0xee>, <4 0xec>, <6 0xeb>,
+		<10 0xe7>, <20 0xdf>, <30 0xd8>, <45 0xd0>, <70 0xc5>,
+		<100 0xb9>, <150 0xaf>, <227 0x99>, <300 0x88>, <400 0x76>,
+		<500 0x66>, <600 0x59>, <800 0x42>, <1023 0x2a>;
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <1023>;
+	qcom,mdss-brightness-max-level = <1023>;
+	qcom,mdss-dsi-bl-normal-max-level = <1023>;
+	qcom,mdss-brightness-normal-max-level = <1023>;
+	qcom,mdss-brightness-default-level = <320>;
+	qcom,platform-te-gpio = <&tlmm 8 0>;
+	qcom,platform-reset-gpio = <&tlmm 6 0>;
+	qcom,platform-poc-gpio = <&tlmm 130 0>;
+	qcom,tp1v8-gpio = <&tlmm 119 0>;
+	qcom,mdss-dsi-display-timings {
+		timing@0{
+			qcom,mdss-dsi-panel-phy-timings = [00 22 09 09 25 23
+				09 09 06 03 04 00 1C 19];
+			qcom,display-topology = <1 0 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};
+
+&dsi_samsung_sofef03f_m_fhd_dsc_cmd {
+	oplus,mdss-dsi-vendor-name = "SOFEF03F";
+	oplus,mdss-dsi-manufacture = "samsung";
+	oplus,dsi-fod-brightness = <0 0xff>,
+		<1 0xf1>, <2 236>, <3 234>, <4 232>, <6 230>,
+		<10 225>, <20 215>, <30 208>, <45 197>, <70 184>,
+		<100 175>, <150 160>, <227 142>, <300 128>, <400 115>,
+		<500 100>, <600 82>, <800 66>, <1023 30>;
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <1023>;
+	qcom,mdss-brightness-max-level = <1023>;
+	qcom,mdss-dsi-bl-normal-max-level = <1023>;
+	qcom,mdss-brightness-normal-max-level = <1023>;
+	qcom,mdss-brightness-default-level = <320>;
+	qcom,platform-te-gpio = <&tlmm 8 0>;
+	qcom,platform-reset-gpio = <&tlmm 6 0>;
+	qcom,platform-poc-gpio = <&tlmm 130 0>;
+	qcom,tp1v8-gpio = <&tlmm 119 0>;
+	qcom,vddd-gpio = <&tlmm 120 0>;
+	qcom,err-flag-gpio = <&tlmm 114 0>;
+	qcom,mdss-dsi-display-timings {
+		timing@0 { /* fhd 60hz */
+			qcom,mdss-dsi-panel-phy-timings = [00 24 0A 0A 26 25 09
+				0A 06 02 04 00 1E 1A];
+			qcom,display-topology = <1 1 1>,<2 2 1>;
+			qcom,default-topology-index = <1>;
+			qcom,panel-roi-alignment = <540 30 540 30 540 30>;
+		};
+		timing@1 { /* fhd 90hz */
+			qcom,mdss-dsi-panel-phy-timings = [00 24 0A 0A 26 25 09
+				0A 06 02 04 00 1E 1A];
+			qcom,display-topology = <1 1 1>,<2 2 1>;
+			qcom,default-topology-index = <1>;
+			qcom,panel-roi-alignment = <540 30 540 30 540 30>;
+		};
+	};
+};
+
+&dsi_samsung_sofef00_m_video {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_dcs";
+	qcom,mdss-dsi-bl-min-level = <1>;
+	qcom,mdss-dsi-bl-max-level = <1023>;
+	qcom,platform-te-gpio = <&tlmm 8 0>;
+	qcom,platform-reset-gpio = <&tlmm 6 0>;
+	qcom,platform-reset-gpio-tmo = <&tlmm 78 0>;
+	qcom,mdss-dsi-display-timings {
+		timing@0{
+			qcom,mdss-dsi-panel-phy-timings = [00 20 07 07 0c 12 06
+				08 06 03 04 00];
+			qcom,display-topology = <1 0 1>;
+			qcom,default-topology-index = <0>;
+		};
+	};
+};
