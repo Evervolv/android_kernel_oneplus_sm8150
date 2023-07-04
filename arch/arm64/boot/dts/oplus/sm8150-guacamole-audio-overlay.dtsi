@@ -1,0 +1,134 @@
+/*
+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include "../qcom/sm8150-mtp-audio-overlay.dtsi"
+
+&snd_9360 {
+	status = "disabled";
+};
+
+&wcd9360_cdc {
+	status = "disabled";
+};
+
+&clock_audio {
+	status = "disabled";
+};
+
+&snd_934x {
+	qcom,audio-routing =
+		"AIF4 VI", "MCLK",
+		"RX_BIAS", "MCLK",
+		"MADINPUT", "MCLK",
+		"hifi amp", "LINEOUT1",
+		"hifi amp", "LINEOUT2",
+		"AMIC1", "MIC BIAS1",
+		"AMIC2", "MIC BIAS2",
+		"MIC BIAS2", "Headset Mic",
+		"AMIC3", "MIC BIAS4",
+		"MIC BIAS4", "ANCRight Headset Mic",
+		"AMIC4", "MIC BIAS1",
+		"MIC BIAS1", "ANCLeft Headset Mic",
+		"AMIC5", "MIC BIAS1",
+		"MIC BIAS1", "Handset Mic",
+		"DMIC0", "MIC BIAS1",
+		"MIC BIAS1", "Digital Mic0",
+		"DMIC1", "MIC BIAS1",
+		"MIC BIAS1", "Digital Mic1",
+		"DMIC2", "MIC BIAS3",
+		"MIC BIAS3", "Digital Mic2",
+		"DMIC3", "MIC BIAS3",
+		"MIC BIAS3", "Digital Mic3",
+		"DMIC4", "MIC BIAS4",
+		"MIC BIAS4", "Digital Mic4",
+		"DMIC5", "MIC BIAS4",
+		"MIC BIAS4", "Digital Mic5",
+		"SpkrLeft IN", "SPK1 OUT",
+		"SpkrRight IN", "SPK2 OUT";
+
+	qcom,wsa-max-devs = <0>;
+	qcom,msm-mbhc-usbc-audio-supported = <1>;
+	qcom,msm-mbhc-hs-mic-max-threshold-mv = <2550>;
+	pinctrl-names = "quat_mi2s_enable","quat_mi2s_disable",
+		"quat_tdm_enable","quat_tdm_disable";
+	pinctrl-0 = <&quat_mi2s_active
+		&quat_mi2s_sd0_active &quat_mi2s_sd1_active>;
+	pinctrl-1 = <&quat_mi2s_sleep
+		&quat_mi2s_sd0_sleep &quat_mi2s_sd1_sleep>;
+	pinctrl-2 = <&quat_tdm_active
+		&quat_tdm_din_active &quat_tdm_dout_active>;
+	pinctrl-3 = <&quat_tdm_sleep
+		&quat_tdm_din_sleep &quat_tdm_dout_sleep>;
+
+	vreg_ldo-supply = <&pm8150l_l10>;
+	vreg_bob-supply = <&pm8150l_bob>;
+
+	oplus,speaker-pa = "nxp";
+	oplus,usbc-switch = <1>;  /* 0: no usbc switch; 1: fsa4480; 2: max20328 */
+	oplus,mbhc-use-usbc-detect = <1>;
+	oplus,mbhc-headset-bias-alwayon = <1>;
+};
+
+&wcd934x_cdc {
+	qcom,cdc-micbias1-mv = <2700>;
+	qcom,cdc-micbias2-mv = <2700>;
+	qcom,cdc-micbias4-mv = <2700>;
+};
+
+&wsa881x_70211 {
+	status = "disabled";
+};
+
+&wsa881x_70212 {
+	status = "disabled";
+};
+
+&wsa881x_70213 {
+	status = "disabled";
+};
+
+&wsa881x_70214 {
+	status = "disabled";
+};
+
+&qupv3_se4_i2c {
+	tfa98xx_right: tfa98xx_right@34 {
+		compatible = "nxp,tfa98xx";
+		reg = <0x34>;
+		reset-gpio = <&tlmm 37 0>;
+		status = "ok";
+	};
+
+	tfa98xx_left: tfa98xx_left@35 {
+		compatible = "nxp,tfa98xx";
+		reg = <0x35>;
+		reset-gpio = <&tlmm 100 0>;
+		status = "ok";
+	};
+};
+
+&dai_mi2s3 {
+	qcom,msm-mi2s-rx-lines = <2>;
+	qcom,msm-mi2s-tx-lines = <1>;
+};
+
+&soc {
+	oplus,audio-drv {
+		compatible = "oplus,asoc-audio";
+		//for nxp speaker
+		oplus,speaker-vendor = "nxp";
+		oplus,speaker-i2s-id = <3>;
+		oplus,speaker-codec-name = "tfa98xx.0-0035", "tfa98xx.0-0034";
+		oplus,speaker-codec-dai-name = "tfa98xx-aif-0-35", "tfa98xx-aif-0-34";
+	};
+};
