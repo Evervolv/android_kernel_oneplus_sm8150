@@ -1,0 +1,247 @@
+/* This is for guacamole family */
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/spmi/spmi.h>
+
+&spmi_bus {
+	qcom,pm8009@10 {
+		compatible ="qcom,spmi-pmic";
+		reg = <0x10 SPMI_USID>;
+		#address-cells = <2>;
+		#size-cells = <0>;
+
+		qcom,revid@100 {
+			compatible = "qcom,qpnp-revid";
+			reg = <0x100 0x100>;
+		};
+
+		qcom,power-on@800 {
+			compatible = "qcom,qpnp-power-on";
+			reg = <0x800 0x100>;
+		};
+
+		pm8009_gpios: pinctrl@c000 {
+			compatible = "qcom,spmi-gpio";
+			reg = <0xc000 0x400>;
+			interrupts = <0xa 0xc0 0 IRQ_TYPE_NONE>,
+				     <0xa 0xc1 0 IRQ_TYPE_NONE>,
+				     <0xa 0xc2 0 IRQ_TYPE_NONE>,
+				     <0xa 0xc3 0 IRQ_TYPE_NONE>;
+			interrupt-names = "pm8009_gpio1", "pm8009_gpio2",
+					  "pm8009_gpio3", "pm8009_gpio4";
+			gpio-controller;
+			#gpio-cells = <2>;
+		};
+	};
+
+	qcom,pm8009@11 {
+		compatible = "qcom,spmi-pmic";
+		reg = <0x11 SPMI_USID>;
+		#address-cells = <2>;
+		#size-cells = <0>;
+	};
+
+   /*power key + vol down long press hard reset*/
+   qcom,pm8150@0 {
+        qcom,power-on@800 {
+            interrupts = <0x0 0x8 0x0 IRQ_TYPE_NONE>,
+                         <0x0 0x8 0x1 IRQ_TYPE_NONE>,
+                         <0x0 0x8 0x5 IRQ_TYPE_NONE>;
+            interrupt-names = "kpdpwr", "resin", "kpdpwr-resin-bark";
+            qcom,s3-src = "kpdpwr-and-resin";
+            qcom,pon_1 {
+                qcom,support-reset = <0>;
+                qcom,s1-timer = <6720>;
+                qcom,s2-timer = <2000>;
+                qcom,s2-type = <PON_POWER_OFF_TYPE_HARD_RESET>;
+                qcom,pull-up;
+            };
+
+            qcom,pon_2 {
+                qcom,support-reset = <0>;
+                qcom,s1-timer = <6720>;
+                qcom,s2-timer = <2000>;
+                qcom,s2-type = <PON_POWER_OFF_TYPE_HARD_RESET>;
+                qcom,pull-up;
+            };
+
+            qcom,pon_3 {
+                qcom,pon-type = <PON_POWER_ON_TYPE_KPDPWR_RESIN>;
+                qcom,support-reset = <0>;
+                qcom,s1-timer = <6720>;
+                qcom,s2-timer = <2000>;
+                qcom,s2-type = <PON_POWER_OFF_TYPE_HARD_RESET>;
+                qcom,pull-up;
+            };
+       };
+   };
+};
+
+&pm8009_gpios {
+    pm8009_gpios_pinctl: pm8009_gpios_pinctl {
+
+        rf_cable_ant1: rf_cable_ant1{
+            pins = "gpio3";
+            function = "normal";
+            power-source = <1>;
+            bias-pull-up;
+            qcom,pull-up-strength = <0>; /* 30uA pull up */
+            input-enable;  /* digital input */
+        };
+        rf_cable_ant3: rf_cable_ant3 {
+            pins = "gpio4";
+            function = "normal";
+            power-source = <1>;
+            bias-pull-up;
+            qcom,pull-up-strength = <0>; /* 30uA pull up */
+            input-enable;  /* digital input */
+        };
+    };
+};
+
+&pm8150_gpios {
+	interrupts = <0x0 0xc0 0 IRQ_TYPE_NONE>,
+			<0x0 0xc2 0 IRQ_TYPE_NONE>,
+			<0x0 0xc3 0 IRQ_TYPE_NONE>,
+			<0x0 0xc5 0 IRQ_TYPE_NONE>,
+			<0x0 0xc6 0 IRQ_TYPE_NONE>,
+			<0x0 0xc8 0 IRQ_TYPE_NONE>,
+			<0x0 0xc9 0 IRQ_TYPE_NONE>;
+	interrupt-names = "pm8150_gpio1", "pm8150_gpio3",
+			"pm8150_gpio4", "pm8150_gpio6",
+			"pm8150_gpio7","pm8150_gpio9", "pm8150_gpio10";
+	qcom,gpios-disallowed = <2 5 8>;
+
+	ab_id1 {
+		ab_id1_default: ab_id1_default {
+			pins = "gpio1";
+			function = "normal";
+			input-enable;
+			bias-disable;
+			power-source = <0>;
+		};
+	};
+
+    fp_id1_init: fp_id1_init {
+		pins = "gpio3";
+		function = "normal";
+		power-source = <0>;
+		bias-disable;
+		input-enable;
+	};
+
+	key_vol_down {
+		key_vol_down_default: key_vol_down_default {
+			pins = "gpio7";
+			function = "normal";
+			input-enable;
+			bias-pull-up;
+			power-source = <1>;
+		};
+	};
+
+	dischg_enable: dischg_enable {
+		pins = "gpio9"; /* GPIO 9 */
+		function = "normal"; /* normal */
+		bias-disable; //No Pull
+		power-source = <0>;//VIN0 3.3
+		output-high; //digital output, no invert
+		qcom,drive-strength = <3>; //LOW strength
+	};
+
+	dischg_disable: dischg_disable {
+		pins = "gpio9"; /* GPIO 9 */
+		function = "normal"; /* normal */
+		bias-disable; //No Pull
+		power-source = <0>;//VIN0 3.3
+		output-low; //digital output, no invert
+		qcom,drive-strength = <3>; //LOW strength
+	};
+
+	motor_sleep_gpio: motor_sleep_gpio {
+		pins = "gpio10";
+		function = "normal";
+		power-source = <0>;
+		bias-disable;
+		output-low;
+	};
+};
+
+&pm8150b_gpios {
+	ab_id2 {
+		ab_id2_default: ab_id2_default {
+			pins = "gpio2";
+			function = "normal";
+			input-enable;
+			bias-disable;
+			power-source = <0>;
+		};
+	};
+
+	gpio1_adc {
+		gpio1_adc_default: gpio1_adc_default {
+			pins = "gpio1"; /* GPIO 1 */
+			function = "normal"; /* normal */
+			bias-high-impedance; /* DISABLE GPIO1 for ADC*/
+		};
+	};
+
+	gpio12_adc {
+		gpio12_adc_default: gpio12_adc_default {
+			pins = "gpio12"; /* GPIO 12 */
+			function = "normal"; /* normal */
+			bias-pull-up;
+			bias-high-impedance; /* DISABLE GPIO12 for ADC*/
+		};
+	};
+
+	motor_mode0_gpio: motor_mode0_gpio {
+		pins = "gpio5"; /* GPIO 5 */
+		function = "normal"; /* normal */
+		output-high;
+		bias-disable; /* No Pull */
+	};
+
+	motor_mode0_hi_impedance: motor_mode0_hi_impedance {
+		pins = "gpio5"; /* GPIO 5 */
+		function = "normal"; /* normal */
+		bias-high-impedance;
+	};
+
+	motor_boost_en: motor_boost_en {
+		pins = "gpio12"; /* GPIO 12 */
+		function = "normal"; /* normal */
+		output-low;
+		bias-disable; /* No Pull */
+	};
+};
+
+&pm8150l_gpios {
+	motor_mode1_gpio: motor_mode1_gpio {
+		pins = "gpio8";
+		function = "normal";
+		power-source = <0>; /* 3.6V */
+		bias-disable; /* No Pull */
+		output-low; /* digital output, no invert */
+		qcom,drive-strength = <3>; /* LOW strength */
+	};
+
+	motor_pwm_config: motor_pwm_config {
+		pins = "gpio10";
+		function = "func1";
+		bias-disable;
+		power-source = <0>;
+		output-low;
+		qcom,drive-strength = <3>;
+		drive-push-pull;
+	};
+
+	motor_dir_gpio: motor_dir_gpio {
+		pins = "gpio11";
+		function = "normal";
+		bias-disable; /* No Pull */
+		power-source = <0>; /* VIN0 3.6V*/
+		output-low; /* digital output, no invert */
+		qcom,drive-strength = <3>; /* LOW strength */
+	};
+};
