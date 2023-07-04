@@ -1,0 +1,156 @@
+/*
+ * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+#include <dt-bindings/thermal/thermal.h>
+
+&thermal_zones {
+	/delete-node/ soc;
+
+	skin-therm {
+		polling-delay-passive = <2000>;
+		polling-delay = <0>;
+		thermal-governor = "step_wise";
+		thermal-sensors = <&pm8150_adc_tm ADC_AMUX_THM1_PU2>;
+		/delete-property/ wake-capable-sensor;
+		trips {
+			/delete-node/ active-config0;
+			freq_config1: freq_config1 {
+				temperature = <52000>;
+				hysteresis = <2000>;
+				type = "passive";
+			};
+			freq_config2: freq_config2 {
+				temperature = <54000>;
+				hysteresis = <2000>;
+				type = "passive";
+			};
+		};
+		cooling-maps {
+			freq_dev0 {
+				trip = <&freq_config1>;
+				cooling-device =
+					<&msm_gpu THERMAL_NO_LIMIT
+						(THERMAL_MAX_LIMIT-1)>;/*345*/
+			};
+			freq_dev1 {
+				trip = <&freq_config1>;
+				cooling-device =
+					<&CPU0 9 9>;/*1036*/
+			};
+			freq_dev2 {
+				trip = <&freq_config1>;
+				cooling-device =
+					<&CPU4 13 13>;/*1056*/
+			};
+			freq_dev3 {
+				trip = <&freq_config1>;
+				cooling-device =
+					<&CPU7 16 16>;/*1171*/
+			};
+			freq_dev4 {
+				trip = <&freq_config2>;
+				cooling-device =
+					<&CPU0 11 11>;/*844*/
+			};
+			freq_dev5 {
+				trip = <&freq_config2>;
+				cooling-device =
+					<&CPU4 THERMAL_MAX_LIMIT
+					THERMAL_MAX_LIMIT>;
+			};
+			freq_dev6 {
+				trip = <&freq_config2>;
+				cooling-device =
+					<&CPU5 THERMAL_MAX_LIMIT
+					THERMAL_MAX_LIMIT>;
+			};
+			freq_dev7 {
+				trip = <&freq_config2>;
+				cooling-device =
+					<&CPU6 THERMAL_MAX_LIMIT
+					THERMAL_MAX_LIMIT>;
+			};
+			freq_dev8 {
+				trip = <&freq_config2>;
+				cooling-device =
+					<&CPU7 THERMAL_MAX_LIMIT
+					THERMAL_MAX_LIMIT>;
+			};
+		};
+	};
+
+	skin-msm-therm {
+		/delete-property/ wake-capable-sensor;
+		trips {
+			/delete-node/ active-config0;
+			freq_config3: freq_config3 {
+				temperature = <62000>;
+				hysteresis = <2000>;
+				type = "passive";
+			};
+			freq_config4: freq_config4 {
+				temperature = <64000>;
+				hysteresis = <2000>;
+				type = "passive";
+			};
+			freq_config5: freq_config5 {
+				temperature = <66000>;
+				hysteresis = <2000>;
+				type = "passive";
+			};
+		};
+		cooling-maps {
+			freq_dev0 {
+				trip = <&freq_config3>;
+				cooling-device =
+					<&CPU0 2 2>;/*1632 18*/
+			};
+			freq_dev1 {
+				trip = <&freq_config3>;
+				cooling-device =
+					<&CPU4 8 8>;/*1612 17*/
+			};
+			freq_dev2 {
+				trip = <&freq_config3>;
+				cooling-device =
+					<&CPU7 9 9>;/*1920 20*/
+			};
+			freq_dev3 {
+				trip = <&freq_config4>;
+				cooling-device =
+					<&CPU0 4 4>;/*1478*/
+			};
+			freq_dev4 {
+				trip = <&freq_config4>;
+				cooling-device =
+					<&CPU4 11 11>;/*1286*/
+			};
+			freq_dev5 {
+				trip = <&freq_config4>;
+				cooling-device =
+					<&CPU7 13 13>;/*1497*/
+			};
+			freq_dev6 {
+				trip = <&freq_config4>;
+				cooling-device =
+					<&msm_gpu THERMAL_NO_LIMIT
+						(THERMAL_MAX_LIMIT-3)>;/*499*/
+			};
+			freq_dev7 {
+				trip = <&freq_config5>;
+				cooling-device =
+					<&msm_gpu THERMAL_NO_LIMIT
+						(THERMAL_MAX_LIMIT-2)>;/*427*/
+			};
+		};
+	};
+};
