@@ -1,0 +1,352 @@
+/*this is for different project dtsi*/
+#include "sm8150-guacamoleb-common.dtsi"
+#include "sm8150-camera-sensor-guacamole.dtsi"
+
+&soc {
+	dsi_samsung_sofef03f_m_fhd_dsc_cmd_display {
+		qcom,dsi-display-active;
+	};
+};
+
+&goodix_optical {
+	chip-name = "G_OPTICAL_18865_G3";  /* /proc/fp_id, will be displayed in engineer menu  */
+};
+
+&oplus_sensor {
+	lsensor: lsensor@0 {
+		sensor-name = <0x02>;//TCS3701
+		sensor-index = <0>;
+		sensor-type = <3>;//OPLUS_LIGHT
+		bus-number = <3>;
+		irq-number = <117>;
+		als-type = <2>;
+		is-unit-device = <1>;
+		is-als-dri = <1>;
+		als-factor = <110>;
+		is_als_initialed = <0>;
+		als_buffer_length = <10>;
+		normalization_value = <549>;
+	};
+
+	psensor: psensor@0 {
+		sensor-name = <0x02>;//TCS3701
+		sensor-index = <0>;
+		sensor-type = <4>;//OPLUS_PROXIMITY
+		bus-number = <3>;
+		irq-number = <117>;
+		ps-cail-type = <2>;
+		ps-type = <1>;
+		is_ps_initialzed = <0>;
+		low_step = <300>;
+		high_step = <400>;
+		low_limit = <400>;
+		high_limit = <600>;
+		dirty_low_step = <100>;
+		dirty_high_step = <150>;
+		ps_dirty_limit = <1020>;
+		ps_ir_limit = <500>;
+		ps_adjust_min = <0>;
+		ps_adjust_max = <600>;
+		sampling_count = <5>;
+		step_max = <400>;
+		step_min = <100>;
+		step_div = <1500>;
+		anti_shake_delta = <80>;
+		dynamic_cali_max = <1024>;
+		raw2offset_radio = <20800>;
+		offset_max = <250>;
+		offset_range_min = <0xFFFFFF01>;// -255
+		offset_range_max = <255>;
+		force_cali_limit = <2000>;
+		cali_jitter_limit = <20>;
+		cal_offset_margin = <80>;
+	};
+};
+
+&pickup_detect {
+	is-need-prox = <1>;//0 - disable; 1 - enable
+};
+
+&mtp_batterydata {
+	#include "OP-fg-batterydata-3800mah.dtsi"
+};
+
+&s3706_ts {
+	status = "ok";
+	project_id = <18865>;
+	reset-gpio = <&tlmm 80 0x00>;
+	touchpanel,display-coords = <1079 2399>;
+	touchpanel,panel-coords = <1079 2399>;
+	touchpanel,tx-rx-num = <15 34>;
+};
+
+&tp_rst_active {
+	mux {
+		pins = "gpio80";
+		function = "gpio";
+	};
+	config {
+		pins = "gpio80";
+		drive-strength = <8>;
+		bias-pull-up;
+	};
+};
+
+&tp_rst_suspend {
+	mux {
+		pins = "gpio80";
+		function = "gpio";
+	};
+	config {
+		pins = "gpio80";
+		drive-strength = <8>;
+		bias-pull-down;
+	};
+};
+
+&pm8150b_charger {
+	qcom,batt_capacity_mah = <3800>;/*typical capacity*/
+	qcom,temp_cold_fastchg_current_ma = <350>;
+	qcom,temp_little_cold_vfloat_mv = <4435>;
+	qcom,temp_little_cold_fastchg_current_ma_high = <1750>;
+	qcom,temp_little_cold_fastchg_current_ma_low = <1750>;
+	qcom,temp_little_cold_fastchg_current_ma = <1750>;
+	qcom,temp_cool_vfloat_mv = <4435>;
+	qcom,temp_little_cool_vfloat_mv = <4435>;
+	qcom,temp_little_cool_fastchg_current_ma = <2000>;
+	qcom,temp_normal_fastchg_current_ma = <2000>;
+	qcom,temp_normal_vfloat_mv = <4435>;
+	qcom,little_cold_vfloat_sw_limit = <4235>;
+	qcom,cool_vfloat_sw_limit = <4335>;
+	qcom,little_cool_vfloat_sw_limit = <4335>;
+	qcom,normal_vfloat_sw_limit = <4335>;
+	qcom,warm_vfloat_sw_limit = <4030>;
+	qcom,ffc2_normal_fastchg_ma = <950>;
+	qcom,ffc2_warm_fastchg_ma = <1050>;
+	qcom,ffc2_temp_low_decidegc = <120>;
+	qcom,ffc_normal_vfloat_sw_limit = <4480>;
+	qcom,default_temp_normal_vfloat_mv = <4435>;
+};
+
+&stm8s_fastcg {
+	qcom,skin-thermal-high-threshold = <370>;
+	qcom,skin-thermal-normal-threshold = <340>;
+	qcom,ctrl-by-skin-therm;
+	qcom,charging_reset-gpio = <&tlmm 134 0x00>;
+};
+
+&charging_reset_active {
+	mux {
+		pins = "gpio134";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio134";
+		drive-strength = <2>;
+		bias-pull-up;
+	};
+};
+
+&charging_reset_sleep {
+	mux {
+		pins = "gpio134";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio134";
+		drive-strength = <2>;
+		bias-pull-down;
+	};
+};
+
+&qupv3_se9_i2c {
+	magnachip@0D {
+		compatible = "oplus,hall-mxm1120,up";
+		interrupts = <10 0x02>;
+		dhall,irq-gpio = <&tlmm 10 0x2008>;
+	};
+
+	magnachip@0C {
+		interrupts = <36 0x02>;
+		dhall,irq-gpio = <&tlmm 36 0x2008>;
+	};
+
+	ist8801@19 {
+		compatible = "oplus,hall-ist8801,up";
+		reg = <0x19>;
+		dhall,id = <1>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <10 0x02>;
+		dhall,irq-gpio = <&tlmm 10 0x2008>;
+		vdd-supply = <&pm8150l_l7>;
+		pinctrl-names = "ist8801_hall_up_active";
+		pinctrl-0 = <&ist8801_hall_up_active>;
+	};
+
+	ist8801@18 {
+		compatible = "oplus,hall-ist8801,down";
+		reg = <0x18>;
+		dhall,id = <2>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <36 0x02>;
+		dhall,irq-gpio = <&tlmm 36 0x2008>;
+		vdd-supply = <&pm8150l_l7>;
+		pinctrl-names = "ist8801_hall_down_active";
+		pinctrl-0 = <&ist8801_hall_down_active>;
+	};
+};
+
+&uphall_tri_state_key_active {
+	mux {
+		pins = "gpio10";
+		function = "gpio";
+	};
+	config {
+		pins = "gpio10";
+		drive-strength = <2>;
+		bias-pull-up;
+	};
+};
+
+&downhall_tri_state_key_active {
+	mux {
+		pins = "gpio36";
+		function = "gpio";
+	};
+	config {
+		pins = "gpio36";
+		drive-strength = <2>;
+		bias-pull-up;
+	};
+};
+
+&tlmm {
+	ist8801_hall_up_active: ist8801_hall_up_active {
+		mux {
+			pins = "gpio10";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio10";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+	};
+
+	ist8801_hall_down_active: ist8801_hall_down_active {
+		mux {
+			pins = "gpio36";
+			function = "gpio";
+		};
+		config {
+			pins = "gpio36";
+			drive-strength = <2>;
+			bias-pull-up;
+		};
+	};
+};
+
+&oem_rf_cable {
+	rf,cable-gpio-0 = <&tlmm 121 0>;
+};
+
+&oem_aboard_check {
+	pinctrl-names = "oem_aboard_active","oem_aboard_sleep";
+	pinctrl-0 = <&ab_id1_default &ab_id2_default>;
+	pinctrl-1 = <&ab_id1_sleep &ab_id2_sleep>;
+};
+
+&rf_cable_ant0_active {
+	mux {
+		pins = "gpio121";
+		function = "gpio";
+	};
+	config {
+		pins = "gpio121";
+		drive-strength = <2>;
+		bias-pull-up;
+	};
+};
+
+&pm8150_gpios {
+	ab_id1 {
+		ab_id1_default: ab_id1_default {
+			pins = "gpio1";
+			function = "normal";
+			input-enable;
+			bias-pull-up;
+			power-source = <0>;
+			qcom,drive-strength = <3>; /* low */
+		};
+		ab_id1_sleep: ab_id1_sleep {
+			pins = "gpio1";
+			function = "normal";
+			input-enable;
+			bias-disable;
+			power-source = <0>;
+			qcom,drive-strength = <3>; /* low */
+		};
+	};
+};
+
+&pm8150b_gpios {
+	ab_id2 {
+		ab_id2_default: ab_id2_default {
+			pins = "gpio2";
+			function = "normal";
+			input-enable;
+			bias-pull-up;
+			power-source = <0>;
+			qcom,drive-strength = <3>; /* low */
+		};
+		ab_id2_sleep: ab_id2_sleep {
+			pins = "gpio2";
+			function = "normal";
+			input-enable;
+			bias-disable;
+			power-source = <0>;
+			qcom,drive-strength = <3>; /* low */
+		};
+	};
+};
+
+&stmvl53l1 {
+	status = "disabled";
+};
+
+&ois_rear_0 {
+	regulator-names = "cam_vio", "cam_vdig", "cam_vaf", "cam_clk";
+	rgltr-min-voltage = <0 2856000 2800000 0>;
+	rgltr-max-voltage = <0 2856000 2800000 0>;
+	rgltr-load-current = <0 80000 0 0>;
+	gpio-no-mux = <0>;
+	pinctrl-names = "cam_default", "cam_suspend";
+	pinctrl-0 = <&cam_sensor_front_0_mclk_active>;
+	pinctrl-1 = <&cam_sensor_front_0_mclk_suspend>;
+	gpios = <&tlmm 15 0>;
+	gpio-req-tbl-num = <0>;
+	gpio-req-tbl-flags = <1>;
+	gpio-req-tbl-label = "CAMIF_MCLK2";
+	cci-device = <1>;
+	cci-master = <0>;
+	clocks = <&clock_camcc CAM_CC_MCLK2_CLK>;
+	clock-names = "cam_clk";
+	clock-cntl-level = "turbo";
+	clock-rates = <19200000>;
+	ois_gyro,id = <3>;
+	master_cci,id = <0>;
+};
+
+&ois_rear_1 {
+	ois_gyro,id = <3>;
+};
+
+&cam_cci0 {
+	qcom,cam-sensor@1 {
+		eeprom-src = <&eeprom_rear_1>;
+		/delete-property/ ois-src;
+		sensor-eeprom-same-cci = <1>;
+	};
+};

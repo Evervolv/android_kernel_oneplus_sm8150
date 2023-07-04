@@ -15,7 +15,11 @@ dts-dirs += hisilicon
 dts-dirs += marvell
 dts-dirs += mediatek
 dts-dirs += nvidia
+ifeq ($(CONFIG_OPLUS_FEATURE_OPROJECT),y)
+dts-dirs += oplus
+else
 dts-dirs += qcom
+endif
 dts-dirs += realtek
 dts-dirs += renesas
 dts-dirs += rockchip
@@ -45,4 +49,3 @@ targets += $(DTB_LIST)
 
 dtbs: $(addprefix $(obj)/, $(DTB_LIST))
 
-clean-files := dts/*.dtb *.dtb

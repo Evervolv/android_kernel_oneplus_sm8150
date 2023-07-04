@@ -1,0 +1,216 @@
+/*this is for different project dtsi*/
+#include "sm8150-guacamole-common.dtsi"
+#include "sm8150-camera-sensor-guacamole.dtsi"
+
+&soc {
+	dsi_samsung_oneplus_dsc_cmd_display {
+		qcom,dsi-display-active;
+	};
+};
+
+&goodix_optical {
+	chip-name = "G_OPTICAL_18865_G3";  /* /proc/fp_id, will be displayed in engineer menu  */
+};
+
+&gsensor {
+	sensor-direction = <4>;
+};
+
+&oplus_sensor {
+	lsensor: lsensor@0 {
+		sensor-name = <0x02>;//TCS3701
+		sensor-index = <0>;
+		sensor-type = <3>;//OPLUS_LIGHT
+		bus-number = <3>;
+		irq-number = <117>;
+		als-type = <2>;
+		is-unit-device = <1>;
+		is-als-dri = <1>;
+		als-factor = <110>;
+		is_als_initialed = <0>;
+		als_buffer_length = <10>;
+		normalization_value = <549>;
+	};
+
+	psensor: psensor@0 {
+		sensor-name = <0x02>;//TCS3701
+		sensor-index = <0>;
+		sensor-type = <4>;//OPLUS_PROXIMITY
+		bus-number = <3>;
+		irq-number = <117>;
+		ps-cail-type = <2>;
+		ps-type = <1>;
+		is_ps_initialzed = <0>;
+		low_step = <300>;
+		high_step = <400>;
+		low_limit = <400>;
+		high_limit = <600>;
+		dirty_low_step = <100>;
+		dirty_high_step = <150>;
+		ps_dirty_limit = <1020>;
+		ps_ir_limit = <500>;
+		ps_adjust_min = <0>;
+		ps_adjust_max = <600>;
+		sampling_count = <5>;
+		step_max = <400>;
+		step_min = <100>;
+		step_div = <1500>;
+		anti_shake_delta = <80>;
+		dynamic_cali_max = <1024>;
+		raw2offset_radio = <20800>;
+		offset_max = <250>;
+		offset_range_min = <0xFFFFFF01>;// -255
+		offset_range_max = <255>;
+		force_cali_limit = <2000>;
+		cali_jitter_limit = <20>;
+		cal_offset_margin = <80>;
+	};
+};
+
+&pickup_detect {
+	is-need-prox = <1>;//0 - disable; 1 - enable
+};
+
+&mtp_batterydata {
+	#include "OP-fg-batterydata-4085mah.dtsi"
+};
+
+&sec_ts {
+	project_id = <19801>;
+};
+
+&pm8150b_charger {
+	qcom,batt_capacity_mah = <4085>;/*typical capacity*/
+	qcom,temp_cold_fastchg_current_ma = <350>;
+	qcom,temp_little_cold_vfloat_mv = <4435>;
+	qcom,temp_little_cold_fastchg_current_ma_high = <1900>;
+	qcom,temp_little_cold_fastchg_current_ma_low = <1900>;
+	qcom,temp_little_cold_fastchg_current_ma = <1900>;
+	qcom,temp_cool_vfloat_mv = <4435>;
+	qcom,temp_little_cool_vfloat_mv = <4435>;
+	qcom,temp_little_cool_fastchg_current_ma = <2000>;
+	qcom,temp_normal_fastchg_current_ma = <2000>;
+	qcom,temp_normal_vfloat_mv = <4435>;
+	qcom,temp_warm_fastchg_current_ma = <1100>;
+	qcom,little_cold_vfloat_sw_limit = <4235>;
+	qcom,cool_vfloat_sw_limit = <4335>;
+	qcom,little_cool_vfloat_sw_limit = <4335>;
+	qcom,normal_vfloat_sw_limit = <4335>;
+	qcom,warm_vfloat_sw_limit = <4030>;
+	qcom,ffc2_normal_fastchg_ma = <900>;/*12C~35c*/
+	qcom,ffc2_warm_fastchg_ma = <950>;/*35C~40c*/
+	qcom,ffc2_temp_low_decidegc = <120>;
+	qcom,ffc_normal_vfloat_sw_limit = <4480>;
+	qcom,default_temp_normal_vfloat_mv = <4435>;
+};
+
+&stm8s_fastcg {
+	/* skin thermal temp adjust the dash current */
+	qcom,skin-thermal-high-threshold = <380>;
+	qcom,skin-thermal-normal-threshold = <360>;
+	qcom,ctrl-by-skin-therm;
+};
+
+&charging_switch1_active {
+	mux {
+		pins = "gpio94";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio94";
+		drive-strength = <16>;
+		bias-pull-up;
+	};
+};
+
+&charging_switch1_sleep {
+	mux {
+		pins = "gpio94";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio94";
+		drive-strength = <2>;
+		bias-disable;
+	};
+};
+
+&charging_reset_active {
+	mux {
+		pins = "gpio10";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio10";
+		drive-strength = <16>;
+		bias-pull-up;
+	};
+};
+
+&charging_reset_sleep {
+	mux {
+		pins = "gpio10";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio10";
+		drive-strength = <2>;
+		bias-disable;
+	};
+};
+
+&charging_clock_active {
+	mux {
+		pins = "gpio92";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio92";
+		drive-strength = <16>;
+		bias-pull-up;
+	};
+};
+
+&charging_clock_sleep {
+	mux {
+		pins = "gpio92";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio92";
+		drive-strength = <2>;
+		bias-disable;
+	};
+};
+
+&charging_data_active {
+	mux {
+		pins = "gpio93";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio93";
+		drive-strength = <16>;
+		bias-pull-up;
+	};
+};
+
+&charging_data_sleep {
+	mux {
+		pins = "gpio93";
+		function = "gpio";
+	};
+
+	config {
+		pins = "gpio93";
+		drive-strength = <2>;
+		bias-disable;
+	};
+};
