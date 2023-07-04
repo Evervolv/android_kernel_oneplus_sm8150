@@ -1,0 +1,244 @@
+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+
+/ {
+	oplus,dtsi_no = <18821 18857 18865 19801 19863>;
+	oplus,pcb_range = <0 55>;
+};
+
+/* sm8150.dtsi */
+&android_q_fstab {
+	odm {
+		status = "disabled";
+	};
+	vendor {
+		dev = "/dev/block/platform/soc/1d84000.sdhci/by-name/vendor";
+	};
+};
+
+&pil_adsp_mem {
+	reg = <0x0 0x8be00000 0x0 0x1e00000>;
+};
+
+&pil_modem_mem {
+	reg = <0x0 0x8dc00000 0x0 0xA000000>;
+};
+
+&pil_video_mem {
+	reg = <0x0 0x97C00000 0x0 0x500000>;
+};
+
+&pil_slpi_mem {
+	reg = <0x0 0x98100000 0x0 0x1400000>;
+};
+
+&pil_ipa_fw_mem {
+	reg = <0x0 0x99500000 0x0 0x10000>;
+};
+
+&pil_ipa_gsi_mem {
+	reg = <0x0 0x99510000 0x0 0x5000>;
+};
+
+&pil_gpu_mem {
+	reg = <0x0 0x99515000 0x0 0x2000>;
+};
+
+&pil_spss_mem {
+	reg = <0x0 0x99600000  0x0 0x100000>;
+};
+
+&pil_cdsp_mem {
+	reg = <0x0 0x99700000 0x0 0x1400000>;
+};
+
+&qcom_seecom {
+	reg = <0x87900000 0x3E00000>;
+};
+
+&qcom_smcinvoke {
+	reg = <0x87900000 0x3E00000>;
+};
+
+&msm_fastrpc {
+	qcom,secure-domains = <0x0F>;
+};
+
+&ipa_smmu_wlan {
+	qcom,smmu-s1-bypass;
+};
+
+&icnss {
+	qcom,smmu-s1-bypass;
+};
+
+/* sm8150-camera.dtsi */
+&icp_iova_mem_map {
+	iova-mem-region-shared {
+		iova-region-len = <0xc800000>;
+	};
+
+	iova-mem-region-secondary-heap {
+		iova-region-start = <0x13C00000>;
+	};
+
+	iova-mem-region-io {
+		iova-region-start = <0x13E00000>;
+		iova-region-len = <0xa6a00000>;
+	};
+
+	iova-mem-qdss-region {
+		iova-region-start = <0x13D00000>;
+	};
+};
+
+/* sm8150-audio.dtsi */
+&snd_934x {
+	qcom,afe-rxtx-lb = <1>;
+	asoc-platform = <&pcm0>, <&pcm1>, <&pcm2>, <&voip>, <&voice>,
+			<&loopback1>, <&compress>, <&hostless>,
+			<&afe>, <&lsm>, <&routing>, <&compr>,
+			<&pcm_noirq>;
+	asoc-cpu = <&dai_hdmi>, <&dai_dp>,
+			<&dai_mi2s0>, <&dai_mi2s1>,
+			<&dai_mi2s2>, <&dai_mi2s3>,
+			<&dai_mi2s4>, <&dai_pri_auxpcm>,
+			<&dai_sec_auxpcm>, <&dai_tert_auxpcm>,
+			<&dai_quat_auxpcm>, <&dai_quin_auxpcm>,
+			<&sb_0_rx>, <&sb_0_tx>, <&sb_1_rx>, <&sb_1_tx>,
+			<&sb_2_rx>, <&sb_2_tx>, <&sb_3_rx>, <&sb_3_tx>,
+			<&sb_4_rx>, <&sb_4_tx>, <&sb_5_tx>,
+			<&afe_pcm_rx>, <&afe_pcm_tx>, <&afe_proxy_rx>,
+			<&afe_proxy_tx>, <&incall_record_rx>,
+			<&incall_record_tx>, <&incall_music_rx>,
+			<&incall_music_2_rx>, <&sb_5_rx>, <&sb_6_rx>,
+			<&sb_7_rx>, <&sb_7_tx>, <&sb_8_tx>,
+			<&proxy_rx>, <&proxy_tx>,
+			<&usb_audio_rx>, <&usb_audio_tx>,
+			<&dai_pri_tdm_rx_0>, <&dai_pri_tdm_tx_0>,
+			<&dai_sec_tdm_rx_0>, <&dai_sec_tdm_tx_0>,
+			<&dai_tert_tdm_rx_0>, <&dai_tert_tdm_tx_0>,
+			<&dai_quat_tdm_rx_0>, <&dai_quat_tdm_tx_0>,
+			<&dai_quat_tdm_rx_1>,
+			<&dai_quin_tdm_rx_0>, <&dai_quin_tdm_tx_0>,
+			<&afe_loopback_tx>;
+	asoc-cpu-names = "msm-dai-q6-hdmi.8",  "msm-dai-q6-dp.24608",
+			"msm-dai-q6-mi2s.0", "msm-dai-q6-mi2s.1",
+			"msm-dai-q6-mi2s.2", "msm-dai-q6-mi2s.3",
+			"msm-dai-q6-mi2s.4", "msm-dai-q6-auxpcm.1",
+			"msm-dai-q6-auxpcm.2", "msm-dai-q6-auxpcm.3",
+			"msm-dai-q6-auxpcm.4", "msm-dai-q6-auxpcm.5",
+			"msm-dai-q6-dev.16384", "msm-dai-q6-dev.16385",
+			"msm-dai-q6-dev.16386", "msm-dai-q6-dev.16387",
+			"msm-dai-q6-dev.16388", "msm-dai-q6-dev.16389",
+			"msm-dai-q6-dev.16390", "msm-dai-q6-dev.16391",
+			"msm-dai-q6-dev.16392", "msm-dai-q6-dev.16393",
+			"msm-dai-q6-dev.16395", "msm-dai-q6-dev.224",
+			"msm-dai-q6-dev.225", "msm-dai-q6-dev.241",
+			"msm-dai-q6-dev.240", "msm-dai-q6-dev.32771",
+			"msm-dai-q6-dev.32772", "msm-dai-q6-dev.32773",
+			"msm-dai-q6-dev.32770", "msm-dai-q6-dev.16394",
+			"msm-dai-q6-dev.16396", "msm-dai-q6-dev.16398",
+			"msm-dai-q6-dev.16399", "msm-dai-q6-dev.16401",
+			"msm-dai-q6-dev.8194", "msm-dai-q6-dev.8195",
+			"msm-dai-q6-dev.28672", "msm-dai-q6-dev.28673",
+			"msm-dai-q6-tdm.36864", "msm-dai-q6-tdm.36865",
+			"msm-dai-q6-tdm.36880", "msm-dai-q6-tdm.36881",
+			"msm-dai-q6-tdm.36896", "msm-dai-q6-tdm.36897",
+			"msm-dai-q6-tdm.36912", "msm-dai-q6-tdm.36913",
+			"msm-dai-q6-tdm.36914",
+			"msm-dai-q6-tdm.36928", "msm-dai-q6-tdm.36929",
+			"msm-dai-q6-dev.24577";
+	fsa4480-i2c-handle = <&fsa4480_0>;
+};
+
+&fsa4480 {
+	status = "disabled";
+};
+
+&qupv3_se4_i2c {
+	fsa4480_0: fsa4480@42 {
+		compatible = "qcom,fsa4480-i2c";
+		reg = <0x42>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&fsa_usbc_ana_en>;
+	};
+};
+
+/* sm8150-pcie.dtsi */
+&pcie0 {
+	status = "disabled";
+};
+
+/* sm8150-regulator.dtsi */
+&L2F {
+	regulator-min-microvolt = <1000000>;
+};
+
+&soc {
+	/* RPMh regulators: */
+	rpmh-regulator-ldof1 {
+		compatible = "qcom,rpmh-vrm-regulator";
+		mboxes = <&apps_rsc 0>;
+		qcom,resource-name = "ldof1";
+		L1F: pm8009_l1: regulator-pm8009-l1 {
+			regulator-name = "pm8009_l1";
+			qcom,set = <RPMH_REGULATOR_SET_ALL>;
+			regulator-min-microvolt = <1000000>;
+			regulator-max-microvolt = <1200000>;
+		};
+	};
+
+	rpmh-regulator-ldof2 {
+		compatible = "qcom,rpmh-vrm-regulator";
+	};
+
+	rpmh-regulator-ldof3 {
+		compatible = "qcom,rpmh-vrm-regulator";
+		mboxes = <&apps_rsc 0>;
+		qcom,resource-name = "ldof3";
+		L3F: pm8009_l3: regulator-pm8009-l3 {
+			regulator-name = "pm8009_l3";
+			qcom,set = <RPMH_REGULATOR_SET_ALL>;
+			regulator-min-microvolt = <1000000>;
+			regulator-max-microvolt = <1200000>;
+		};
+	};
+
+	rpmh-regulator-ldof4 {
+		compatible = "qcom,rpmh-vrm-regulator";
+		mboxes = <&apps_rsc 0>;
+		qcom,resource-name = "ldof4";
+		L4F: pm8009_l4: regulator-pm8009-l4 {
+			regulator-name = "pm8009_l4";
+			qcom,set = <RPMH_REGULATOR_SET_ALL>;
+			regulator-min-microvolt = <1000000>;
+			regulator-max-microvolt = <1200000>;
+		};
+	};
+
+	rpmh-regulator-ldof7 {
+		compatible = "qcom,rpmh-xob-regulator";
+		mboxes = <&apps_rsc 0>;
+		qcom,resource-name = "ldof7";
+		L7F: pm8009_l7: regulator-pm8009-l7 {
+			regulator-name = "pm8009_l7";
+			qcom,set = <RPMH_REGULATOR_SET_ALL>;
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+		};
+	};
+};
+
+/* sm8150-usb.dtsi */
+&usb0 {
+	dwc3@a600000 {
+		/delete-property/ snps,usb3-u1u2-disable;
+		maximum-speed = "super-speed";
+	};
+
+	qcom,usbbam@a704000 {
+		qcom,pipe0 {
+			qcom,usb-bam-mem-type = <2>;
+		};
+	};
+};
