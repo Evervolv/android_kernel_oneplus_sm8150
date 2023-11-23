@@ -1,3 +1,6 @@
 source "drivers/power/avs/Kconfig"
 source "drivers/power/reset/Kconfig"
 source "drivers/power/supply/Kconfig"
+#ifdef VENDOR_EDIT
+source "drivers/power/oplus/Kconfig"
+#endif

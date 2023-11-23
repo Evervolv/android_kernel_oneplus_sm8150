@@ -1,0 +1,83 @@
+config OPLUS_CHARGER
+	bool "OPLUS charging system"
+	depends on I2C
+	select REGMAP_I2C
+	help
+	  Say Y here to enable OPLUS charging system support
+
+config OPLUS_SM8150R_CHARGER
+	tristate "OPLUS SM8150 charger driver"
+	depends on MFD_SPMI_PMIC
+	help
+	  Enables support for the oplus charging framework
+
+config OPLUS_SHORT_C_BATT_CHECK
+	bool "OPLUS batt short "
+	depends on OPLUS_CHARGER || OPLUS_SM8150R_CHARGER
+	help
+	  Say Y here to declare OPLUS batt short	  
+
+config OPLUS_SHORT_IC_CHECK
+	bool "OPLUS short ic"
+	depends on OPLUS_CHARGER || OPLUS_SM8150R_CHARGER
+	help
+	  Say Y here to declare OPLUS batt short
+
+config OPLUS_SHORT_HW_CHECK
+	bool "OPLUS batt HW SHORT "
+	depends on OPLUS_CHARGER || OPLUS_SM8150R_CHARGER
+	help
+	  Say Y here to declare charging system is on MTK
+
+config OPLUS_SHORT_USERSPACE
+	bool "OPLUS batt userspace"
+	depends on OPLUS_CHARGER || OPLUS_SM8150R_CHARGER
+	help
+	  Say Y to include support
+
+config OPLUS_CHIP_SOC_NODE
+	bool "OPLUS chip soc node"
+	depends on OPLUS_CHARGER || OPLUS_SM8150R_CHARGER
+	help
+	  Say Y to include support
+
+config OPLUS_WPC_INTERFACE_ENABLE
+	bool "OPLUS WPC INTERFACE ENABLE"
+	depends on OPLUS_SM8150R_CHARGER
+	help
+	  Say Y to include support
+
+config OPLUS_CALL_MODE_SUPPORT
+	bool "OPLUS call mode support"
+	depends on OPLUS_SM8150R_CHARGER
+	help
+	  Say Y to include support
+
+config OPLUS_SMART_CHARGER_SUPPORT
+	bool "OPLUS smart charger support"
+	depends on OPLUS_SM8150R_CHARGER
+	help
+	  Say Y to include support
+
+config OPLUS_RTC_DET_SUPPORT
+	bool "OPLUS RTC DET SUPPORT"
+	depends on OPLUS_SM8150R_CHARGER
+	help
+	  Say Y to include support
+
+config OPLUS_CHECK_CHARGERID_VOLT
+	bool "OPLUS CHECK CHARGERID VOLT"
+	depends on OPLUS_SM8150R_CHARGER
+	help
+	  Say Y to include support
+
+config OPLUS_SHIP_MODE_SUPPORT
+	bool "OPLUS_SHIP_MODE_SUPPORT"
+	depends on OPLUS_SM8150R_CHARGER
+	help
+	  Say Y to include support
+
+config OPLUS_SMOOTH_SOC
+	bool "OPLUS SMOOTH SOC "
+	help
+	  Say Y to include support
