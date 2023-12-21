@@ -72,7 +72,6 @@
 };
 
 &s3706_ts {
-	status = "ok";
 	project_id = <18865>;
 	reset-gpio = <&tlmm 80 0x00>;
 	touchpanel,display-coords = <1079 2399>;
