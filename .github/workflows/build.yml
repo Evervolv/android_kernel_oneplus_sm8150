@@ -1,0 +1,42 @@
+name: Build Kernel
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang lld gcc-aarch64-linux-gnu make bc perl openssl
+
+      - name: Set up environment
+        run: |
+          echo "ARCH=arm64" >> $GITHUB_ENV
+          echo "CC=clang" >> $GITHUB_ENV
+          echo "LD=ld.lld" >> $GITHUB_ENV
+          echo "CROSS_COMPILE=aarch64-linux-gnu-" >> $GITHUB_ENV
+
+      - name: Configure the kernel
+        run: make defconfig
+
+      - name: Build the kernel
+        run: make -j$(nproc)
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: kernel-build
+          path: |
+            arch/arm64/boot/Image
+            arch/arm64/boot/Image.gz
+            vmlinux
+            System.map
